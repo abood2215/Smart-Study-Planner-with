@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Smart Study Planner</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="dashboard-page">
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>📚 Study Planner</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">🏠 Home</a></li>
+            <li><a href="courses.html">📖 Courses</a></li>
+            <li><a href="tasks.html">📝 Tasks</a></li>
+            <li><a href="schedule.html">📅 Weekly Schedule</a></li>
+            <li><a href="calendar.html">🗓️ Calendar</a></li>
+            <li><a href="analytics.html">📊 Analytics</a></li>
+            <li class="active"><a href="settings.html">⚙️ Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="btn btn-danger btn-block">Logout</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>⚙️ Settings</h1>
+                <p>Manage your account and system preferences</p>
+            </div>
+        </header>
+
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>👤 Account Information</h2>
+            </div>
+            <div style="background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%); padding: 24px; border-radius: 12px; margin-bottom: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div>
+                        <strong style="color: #1e40af;">👤 Name:</strong>
+                        <p id="userName" style="margin-top: 8px; font-size: 1.125rem;">-</p>
+                    </div>
+                    <div>
+                        <strong style="color: #1e40af;">📧 Email:</strong>
+                        <p id="userEmail" style="margin-top: 8px; font-size: 1.125rem;">-</p>
+                    </div>
+                    <div>
+                        <strong style="color: #1e40af;">📅 Registration Date:</strong>
+                        <p id="userCreatedAt" style="margin-top: 8px; font-size: 1.125rem;">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>📚 Study Preferences</h2>
+                <button class="btn btn-primary btn-sm" onclick="savePreferences()">💾 Save Changes</button>
+            </div>
+            <form id="preferencesForm">
+                <div class="alert alert-success" id="successMsg" style="display: none;"></div>
+
+                <div class="form-group">
+                    <label for="studyHoursPerDay">⏰ Daily Available Study Hours</label>
+                    <select id="studyHoursPerDay" class="form-control">
+                        <option value="2">2 hours</option>
+                        <option value="3">3 hours</option>
+                        <option value="4">4 hours</option>
+                        <option value="5">5 hours</option>
+                        <option value="6">6 hours</option>
+                        <option value="7">7 hours</option>
+                        <option value="8">8 hours</option>
+                        <option value="9">9 hours</option>
+                        <option value="10">10 hours</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="preferredTime">🌅 Preferred Study Time</label>
+                    <select id="preferredTime" class="form-control">
+                        <option value="morning">Morning (6 AM - 12 PM)</option>
+                        <option value="afternoon">Afternoon (12 PM - 6 PM)</option>
+                        <option value="evening">Evening (6 PM - 12 AM)</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>💾 Data Management</h2>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: #f0f9ff; padding: 24px; border-radius: 12px; border: 2px solid #bfdbfe;">
+                    <h3 style="color: #1e40af; margin-bottom: 12px;">📊 Data Statistics</h3>
+                    <div style="margin-bottom: 12px;">
+                        <strong>📖 Courses:</strong> <span id="statCourses">0</span>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <strong>📝 Tasks:</strong> <span id="statTasks">0</span>
+                    </div>
+                    <div>
+                        <strong>💾 Data Size:</strong> <span id="dataSize">0</span> KB
+                    </div>
+                </div>
+
+                <div style="background: #fef3c7; padding: 24px; border-radius: 12px; border: 2px solid #fde68a;">
+                    <h3 style="color: #92400e; margin-bottom: 12px;">📥 Import / Export</h3>
+                    <button class="btn btn-sm" style="background: #f59e0b; color: white; width: 100%; margin-bottom: 12px;" onclick="exportData()">
+                        📤 Export Data
+                    </button>
+                    <button class="btn btn-sm" style="background: #06b6d4; color: white; width: 100%;" onclick="document.getElementById('importFile').click()">
+                        📥 Import Data
+                    </button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                </div>
+
+                <div style="background: #fee2e2; padding: 24px; border-radius: 12px; border: 2px solid #fecaca;">
+                    <h3 style="color: #991b1b; margin-bottom: 12px;">⚠️ Danger Zone</h3>
+                    <button class="btn btn-danger btn-sm" style="width: 100%; margin-bottom: 12px;" onclick="clearAllData()">
+                        🗑️ Delete All Data
+                    </button>
+                    <button class="btn btn-danger btn-sm" style="width: 100%;" onclick="deleteAccount()">
+                        ❌ Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>ℹ️ About</h2>
+            </div>
+            <div style="padding: 20px; background: #f9fafb; border-radius: 12px;">
+                <h3 style="color: #2563eb; margin-bottom: 16px;">📚 Smart Study Planner</h3>
+                <p style="margin-bottom: 12px; line-height: 1.8;">
+                    An intelligent system for managing time and study tasks powered by AI algorithms.
+                    Helps you organize your studies and improve your productivity.
+                </p>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                    <p><strong>Version:</strong> 1.0.0</p>
+                    <p><strong>Release Date:</strong> 2025</p>
+                    <p><strong>Technologies:</strong> HTML, CSS, JavaScript, Chart.js</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/storage.js"></script>
+    <script>
+        if (!storage.isLoggedIn()) {
+            window.location.href = 'login.html';
+        }
+
+        const user = storage.getCurrentUser();
+        const stats = storage.getStats();
+
+        document.getElementById('userName').textContent = user.username;
+        document.getElementById('userEmail').textContent = user.email;
+        document.getElementById('userCreatedAt').textContent = new Date(user.createdAt).toLocaleDateString('en-US');
+
+        document.getElementById('studyHoursPerDay').value = user.studyHoursPerDay;
+        document.getElementById('preferredTime').value = user.preferredTime;
+
+        document.getElementById('statCourses').textContent = stats.totalCourses;
+        document.getElementById('statTasks').textContent = stats.totalTasks;
+
+        const dataSize = new Blob([
+            localStorage.getItem('users') || '',
+            localStorage.getItem('courses') || '',
+            localStorage.getItem('tasks') || '',
+            localStorage.getItem('studySessions') || ''
+        ]).size / 1024;
+        document.getElementById('dataSize').textContent = dataSize.toFixed(2);
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            storage.logoutUser();
+        });
+
+        function savePreferences() {
+            const users = storage.getUsers();
+            const userIndex = users.findIndex(u => u.email === user.email);
+
+            if (userIndex !== -1) {
+                users[userIndex].studyHoursPerDay = parseInt(document.getElementById('studyHoursPerDay').value);
+                users[userIndex].preferredTime = document.getElementById('preferredTime').value;
+
+                localStorage.setItem('users', JSON.stringify(users));
+
+                const successMsg = document.getElementById('successMsg');
+                successMsg.textContent = 'Changes saved successfully!';
+                successMsg.style.display = 'block';
+
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                    location.reload();
+                }, 2000);
+            }
+        }
+
+        function exportData() {
+            const data = {
+                courses: storage.getCourses(),
+                tasks: storage.getTasks(),
+                sessions: storage.getStudySessions(),
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `study-planner-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            alert('Data exported successfully!');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+
+                    if (confirm('Are you sure you want to import data? Current data will be replaced.')) {
+                        if (data.courses) {
+                            const courses = JSON.parse(localStorage.getItem('courses') || '[]');
+                            data.courses.forEach(course => {
+                                course.userId = user.id;
+                                courses.push(course);
+                            });
+                            localStorage.setItem('courses', JSON.stringify(courses));
+                        }
+
+                        if (data.tasks) {
+                            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                            data.tasks.forEach(task => {
+                                tasks.push(task);
+                            });
+                            localStorage.setItem('tasks', JSON.stringify(tasks));
+                        }
+
+                        alert('Data imported successfully!');
+                        location.reload();
+                    }
+                } catch (error) {
+                    alert('Error reading file! Make sure it is a valid file.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearAllData() {
+            if (!confirm('Are you sure you want to delete all data? This action cannot be undone!')) {
+                return;
+            }
+
+            if (!confirm('Final warning! All courses and tasks will be deleted. Are you sure?')) {
+                return;
+            }
+
+            const allCourses = JSON.parse(localStorage.getItem('courses') || '[]');
+            const allTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+            const filteredCourses = allCourses.filter(c => c.userId !== user.id);
+            const courseIds = allCourses.filter(c => c.userId === user.id).map(c => c.id);
+            const filteredTasks = allTasks.filter(t => !courseIds.includes(t.courseId));
+
+            localStorage.setItem('courses', JSON.stringify(filteredCourses));
+            localStorage.setItem('tasks', JSON.stringify(filteredTasks));
+
+            alert('All data deleted!');
+            location.reload();
+        }
+
+        function deleteAccount() {
+            if (!confirm('Are you sure you want to delete your account? All your data will be permanently deleted!')) {
+                return;
+            }
+
+            const password = prompt('Enter your password to confirm:');
+            if (password !== user.password) {
+                alert('Incorrect password!');
+                return;
+            }
+
+            const users = storage.getUsers();
+            const filteredUsers = users.filter(u => u.email !== user.email);
+            localStorage.setItem('users', JSON.stringify(filteredUsers));
+
+            const allCourses = JSON.parse(localStorage.getItem('courses') || '[]');
+            const allTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            const filteredCourses = allCourses.filter(c => c.userId !== user.id);
+            const courseIds = allCourses.filter(c => c.userId === user.id).map(c => c.id);
+            const filteredTasks = allTasks.filter(t => !courseIds.includes(t.courseId));
+
+            localStorage.setItem('courses', JSON.stringify(filteredCourses));
+            localStorage.setItem('tasks', JSON.stringify(filteredTasks));
+
+            alert('Your account has been deleted successfully. Goodbye!');
+            storage.logoutUser();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks - Smart Study Planner</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="dashboard-page">
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>📚 Study Planner</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">🏠 Home</a></li>
+            <li><a href="courses.html">📖 Courses</a></li>
+            <li class="active"><a href="tasks.html">📝 Tasks</a></li>
+            <li><a href="schedule.html">📅 Weekly Schedule</a></li>
+            <li><a href="calendar.html">🗓️ Calendar</a></li>
+            <li><a href="analytics.html">📊 Analytics</a></li>
+            <li><a href="settings.html">⚙️ Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="btn btn-danger btn-block">Logout</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>📝 Task Management</h1>
+                <p>Organize and track all your study tasks</p>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-primary" onclick="openModal('addTaskModal')">
+                    ➕ Add New Task
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard-section" style="margin-bottom: 30px;">
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+                <div class="form-group" style="margin: 0; flex: 1; min-width: 250px;">
+                    <label for="searchTask">🔍 Search</label>
+                    <input type="text" id="searchTask" placeholder="Search for a task..." oninput="filterTasksDisplay()">
+                </div>
+                <div class="form-group" style="margin: 0; flex: 1; min-width: 200px;">
+                    <label for="filterStatus">📊 Status</label>
+                    <select id="filterStatus" onchange="filterTasksDisplay()">
+                        <option value="all">All Tasks</option>
+                        <option value="pending">Pending</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin: 0; flex: 1; min-width: 200px;">
+                    <label for="filterCourse">📖 Course</label>
+                    <select id="filterCourse" onchange="filterTasksDisplay()">
+                        <option value="all">All Courses</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="tasksGrid" class="features-grid">
+        </div>
+
+        <div id="emptyState" style="display: none;" class="empty-state">
+            <div style="font-size: 64px; margin-bottom: 20px;">📝</div>
+            <h2 style="color: #666; margin-bottom: 10px;">No tasks yet</h2>
+            <p style="color: #999;">Start by adding your first task!</p>
+            <button class="btn btn-primary" onclick="openModal('addTaskModal')" style="margin-top: 20px;">
+                ➕ Add Task
+            </button>
+        </div>
+    </main>
+
+    <div id="addTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Task</h2>
+                <span class="close" onclick="closeModal('addTaskModal')">&times;</span>
+            </div>
+            <form id="addTaskForm">
+                <div class="form-group">
+                    <label for="taskName">Task Name *</label>
+                    <input type="text" id="taskName" required placeholder="Example: Solve math homework">
+                </div>
+                <div class="form-group">
+                    <label for="taskCourse">Course *</label>
+                    <select id="taskCourse" required>
+                        <option value="">Select Course</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="taskDeadline">Deadline *</label>
+                    <input type="date" id="taskDeadline" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskEstimatedHours">Estimated Hours *</label>
+                    <input type="number" id="taskEstimatedHours" min="0.5" step="0.5" value="2" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Description (Optional)</label>
+                    <textarea id="taskDescription" rows="3" placeholder="Additional details about the task..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addTaskModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Task</h2>
+                <span class="close" onclick="closeModal('editTaskModal')">&times;</span>
+            </div>
+            <form id="editTaskForm">
+                <input type="hidden" id="editTaskId">
+                <div class="form-group">
+                    <label for="editTaskName">Task Name</label>
+                    <input type="text" id="editTaskName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskCourse">Course</label>
+                    <select id="editTaskCourse" required>
+                        <option value="">Select Course</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskDeadline">Deadline</label>
+                    <input type="date" id="editTaskDeadline" required>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskEstimatedHours">Estimated Hours</label>
+                    <input type="number" id="editTaskEstimatedHours" min="0.5" step="0.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskStatus">Status</label>
+                    <select id="editTaskStatus" required>
+                        <option value="pending">Pending</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskProgress">Completion Percentage (%)</label>
+                    <input type="range" id="editTaskProgress" min="0" max="100" value="0"
+                           oninput="document.getElementById('progressValue').textContent = this.value + '%'"
+                           style="width: 100%;">
+                    <div style="text-align: center; margin-top: 8px;">
+                        <strong id="progressValue">0%</strong>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskDescription">Description</label>
+                    <textarea id="editTaskDescription" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editTaskModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/ai-algorithms.js"></script>
+    <script src="assets/js/tasks.js"></script>
+</body>
+</html>
