@@ -9,7 +9,8 @@
 <body class="dashboard-page">
     <nav class="sidebar">
         <div class="sidebar-header">
-            <h2>📚 Study Planner</h2>
+            <div class="dashboard-icon">📚</div>
+            <h2 class="">Study Planner</h2>
         </div>
         <ul class="sidebar-menu">
             <li><a href="dashboard.html">🏠 Home</a></li>
@@ -26,16 +27,22 @@
     </nav>
 
     <main class="main-content">
-        <header class="dashboard-header">
-            <div class="header-left">
-                <h1>⚙️ Settings</h1>
-                <p>Manage your account and system preferences</p>
+        <div class="dashboard-section">
+            <div class="section-header">
+                <div class="dashboard-section-item">
+                    <div class="dashboard-icon">⚙️</div>
+                    <h1>Settings</h1>
+                </div>
             </div>
-        </header>
+            <p>Manage your account and system preferences</p>
+        </div>
 
         <div class="dashboard-section">
             <div class="section-header">
-                <h2>👤 Account Information</h2>
+                <div class="dashboard-section-item">
+                    <div class="dashboard-icon">👤</div>
+                    <h2>Account Information</h2>
+                </div>
             </div>
             <div style="background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%); padding: 24px; border-radius: 12px; margin-bottom: 24px;">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
@@ -57,7 +64,10 @@
 
         <div class="dashboard-section">
             <div class="section-header">
-                <h2>📚 Study Preferences</h2>
+                <div class="dashboard-section-item">
+                    <div class="dashboard-icon">📚</div>
+                    <h2>Study Preferences</h2>
+                </div>
                 <button class="btn btn-primary btn-sm" onclick="savePreferences()">💾 Save Changes</button>
             </div>
             <form id="preferencesForm">
@@ -91,7 +101,10 @@
 
         <div class="dashboard-section">
             <div class="section-header">
-                <h2>💾 Data Management</h2>
+                <div class="dashboard-section-item">
+                    <div class="dashboard-icon">💾</div>
+                    <h2>Data Management</h2>
+                </div>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
@@ -133,7 +146,10 @@
 
         <div class="dashboard-section">
             <div class="section-header">
-                <h2>ℹ️ About</h2>
+                <div class="dashboard-section-item">
+                    <div class="dashboard-icon">ℹ️</div>
+                    <h2>About</h2>
+                </div>
             </div>
             <div style="padding: 20px; background: #f9fafb; border-radius: 12px;">
                 <h3 style="color: #2563eb; margin-bottom: 16px;">📚 Smart Study Planner</h3>
@@ -151,163 +167,6 @@
     </main>
 
     <script src="assets/js/storage.js"></script>
-    <script>
-        if (!storage.isLoggedIn()) {
-            window.location.href = 'login.html';
-        }
-
-        const user = storage.getCurrentUser();
-        const stats = storage.getStats();
-
-        document.getElementById('userName').textContent = user.username;
-        document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userCreatedAt').textContent = new Date(user.createdAt).toLocaleDateString('en-US');
-
-        document.getElementById('studyHoursPerDay').value = user.studyHoursPerDay;
-        document.getElementById('preferredTime').value = user.preferredTime;
-
-        document.getElementById('statCourses').textContent = stats.totalCourses;
-        document.getElementById('statTasks').textContent = stats.totalTasks;
-
-        const dataSize = new Blob([
-            localStorage.getItem('users') || '',
-            localStorage.getItem('courses') || '',
-            localStorage.getItem('tasks') || '',
-            localStorage.getItem('studySessions') || ''
-        ]).size / 1024;
-        document.getElementById('dataSize').textContent = dataSize.toFixed(2);
-
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            storage.logoutUser();
-        });
-
-        function savePreferences() {
-            const users = storage.getUsers();
-            const userIndex = users.findIndex(u => u.email === user.email);
-
-            if (userIndex !== -1) {
-                users[userIndex].studyHoursPerDay = parseInt(document.getElementById('studyHoursPerDay').value);
-                users[userIndex].preferredTime = document.getElementById('preferredTime').value;
-
-                localStorage.setItem('users', JSON.stringify(users));
-
-                const successMsg = document.getElementById('successMsg');
-                successMsg.textContent = 'Changes saved successfully!';
-                successMsg.style.display = 'block';
-
-                setTimeout(() => {
-                    successMsg.style.display = 'none';
-                    location.reload();
-                }, 2000);
-            }
-        }
-
-        function exportData() {
-            const data = {
-                courses: storage.getCourses(),
-                tasks: storage.getTasks(),
-                sessions: storage.getStudySessions(),
-                exportDate: new Date().toISOString()
-            };
-
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `study-planner-backup-${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-
-            alert('Data exported successfully!');
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-
-                    if (confirm('Are you sure you want to import data? Current data will be replaced.')) {
-                        if (data.courses) {
-                            const courses = JSON.parse(localStorage.getItem('courses') || '[]');
-                            data.courses.forEach(course => {
-                                course.userId = user.id;
-                                courses.push(course);
-                            });
-                            localStorage.setItem('courses', JSON.stringify(courses));
-                        }
-
-                        if (data.tasks) {
-                            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-                            data.tasks.forEach(task => {
-                                tasks.push(task);
-                            });
-                            localStorage.setItem('tasks', JSON.stringify(tasks));
-                        }
-
-                        alert('Data imported successfully!');
-                        location.reload();
-                    }
-                } catch (error) {
-                    alert('Error reading file! Make sure it is a valid file.');
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function clearAllData() {
-            if (!confirm('Are you sure you want to delete all data? This action cannot be undone!')) {
-                return;
-            }
-
-            if (!confirm('Final warning! All courses and tasks will be deleted. Are you sure?')) {
-                return;
-            }
-
-            const allCourses = JSON.parse(localStorage.getItem('courses') || '[]');
-            const allTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-
-            const filteredCourses = allCourses.filter(c => c.userId !== user.id);
-            const courseIds = allCourses.filter(c => c.userId === user.id).map(c => c.id);
-            const filteredTasks = allTasks.filter(t => !courseIds.includes(t.courseId));
-
-            localStorage.setItem('courses', JSON.stringify(filteredCourses));
-            localStorage.setItem('tasks', JSON.stringify(filteredTasks));
-
-            alert('All data deleted!');
-            location.reload();
-        }
-
-        function deleteAccount() {
-            if (!confirm('Are you sure you want to delete your account? All your data will be permanently deleted!')) {
-                return;
-            }
-
-            const password = prompt('Enter your password to confirm:');
-            if (password !== user.password) {
-                alert('Incorrect password!');
-                return;
-            }
-
-            const users = storage.getUsers();
-            const filteredUsers = users.filter(u => u.email !== user.email);
-            localStorage.setItem('users', JSON.stringify(filteredUsers));
-
-            const allCourses = JSON.parse(localStorage.getItem('courses') || '[]');
-            const allTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-            const filteredCourses = allCourses.filter(c => c.userId !== user.id);
-            const courseIds = allCourses.filter(c => c.userId === user.id).map(c => c.id);
-            const filteredTasks = allTasks.filter(t => !courseIds.includes(t.courseId));
-
-            localStorage.setItem('courses', JSON.stringify(filteredCourses));
-            localStorage.setItem('tasks', JSON.stringify(filteredTasks));
-
-            alert('Your account has been deleted successfully. Goodbye!');
-            storage.logoutUser();
-        }
-    </script>
+    <script src="assets/js/settings.js"></script>
 </body>
 </html>

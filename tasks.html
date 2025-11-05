@@ -9,7 +9,8 @@
 <body class="dashboard-page">
     <nav class="sidebar">
         <div class="sidebar-header">
-            <h2>📚 Study Planner</h2>
+            <div class="dashboard-icon">📚</div>
+            <h2 class="">Study Planner</h2>
         </div>
         <ul class="sidebar-menu">
             <li><a href="dashboard.html">🏠 Home</a></li>
@@ -26,17 +27,22 @@
     </nav>
 
     <main class="main-content">
-        <header class="dashboard-header">
-            <div class="header-left">
-                <h1>📝 Task Management</h1>
-                <p>Organize and track all your study tasks</p>
+        <div class="dashboard-header">
+            <div class="section-header">
+                <div class="header-left">
+                    <div class="dashboard-section-item">
+                        <div class="dashboard-icon">📝</div>
+                        <h1>Task Management</h1>
+                    </div>
+                    <p>Organize and track all your study tasks</p>
+                </div>
             </div>
             <div class="header-right">
                 <button class="btn btn-primary" onclick="openModal('addTaskModal')">
                     ➕ Add New Task
                 </button>
             </div>
-        </header>
+        </div>
 
         <div class="dashboard-section" style="margin-bottom: 30px;">
             <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
@@ -169,6 +175,6 @@
 
     <script src="assets/js/storage.js"></script>
     <script src="assets/js/ai-algorithms.js"></script>
-    <script src="assets/js/tasks.js"></script>
+    <!-- <script src="assets/js/tasks.js"></script> -->
 </body>
 </html>

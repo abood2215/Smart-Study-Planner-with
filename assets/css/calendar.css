@@ -1,0 +1,115 @@
+.calendar {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.calendar-nav button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.calendar-nav button:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-day-header {
+    text-align: center;
+    font-weight: 700;
+    padding: 12px;
+    background: linear-gradient(135deg, #2563eb 0%, #6366f1 100%);
+    color: white;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.calendar-day {
+    min-height: 100px;
+    padding: 8px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: white;
+}
+
+.calendar-day:hover {
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    transform: translateY(-2px);
+}
+
+.calendar-day.other-month {
+    background: #f9fafb;
+    color: #9ca3af;
+}
+
+.calendar-day.today {
+    background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%);
+    border-color: #2563eb;
+    border-width: 3px;
+}
+
+.day-number {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    color: #1f2937;
+}
+
+.calendar-day.other-month .day-number {
+    color: #9ca3af;
+}
+
+.task-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 2px;
+}
+
+.task-dot.high { background: #ef4444; }
+.task-dot.medium { background: #f59e0b; }
+.task-dot.low { background: #06b6d4; }
+
+.task-in-day {
+    font-size: 0.75rem;
+    padding: 4px 6px;
+    background: #dbeafe;
+    border-radius: 4px;
+    margin-top: 4px;
+    color: #1e40af;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-in-day.urgent {
+    background: #fee2e2;
+    color: #991b1b;
+}

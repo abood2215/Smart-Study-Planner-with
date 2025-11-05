@@ -190,6 +190,12 @@ h4 { font-size: 1.25rem; }
     animation: slideDown 0.5s ease;
 }
 
+.logo-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 /* Removed invert color mode */
 
 @keyframes slideDown {
@@ -328,7 +334,6 @@ h4 { font-size: 1.25rem; }
 .feature-icon {
     font-size: 4rem;
     margin-bottom: 24px;
-    /* Remove purple tint; keep a subtle neutral shadow for depth */
     filter: none;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     animation: bounce 2s infinite;
@@ -674,6 +679,10 @@ footer p {
 .sidebar-header {
     padding: 32px 24px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color : #ffffff;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -751,6 +760,20 @@ footer p {
     margin-top: 8px;
 }
 
+.dashboard-icon {
+    font-size: 2.5rem;
+    filter: none;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-section-item {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 12px;
+}
+
+
 .stats-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -813,6 +836,7 @@ footer p {
     padding: 28px;
     box-shadow: var(--shadow);
     border: 1px solid var(--gray-100);
+    margin-top: 16px;
 }
 
 .section-header {

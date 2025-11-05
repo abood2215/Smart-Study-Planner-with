@@ -10,7 +10,8 @@
 <body class="dashboard-page">
     <nav class="sidebar">
         <div class="sidebar-header">
-            <h2>📚 Study Planner</h2>
+            <div class="dashboard-icon">📚</div>
+            <h2 class="">Study Planner</h2>
         </div>
         <ul class="sidebar-menu">
             <li class="active"><a href="dashboard.html">🏠 Dashboard</a></li>
@@ -73,7 +74,10 @@
         <div class="dashboard-grid">
             <section class="dashboard-section">
                 <div class="section-header">
-                    <h2>🎯 Your Schedule Today</h2>
+                    <div class="dashboard-section-item">
+                        <div class="dashboard-icon">🎯</div>
+                        <h2>Your Schedule Today</h2>
+                    </div>
                     <button class="btn btn-sm" onclick="generateSchedule()">🔄 Refresh</button>
                 </div>
                 <div id="todaySchedule" class="schedule-list">
@@ -83,7 +87,10 @@
 
             <section class="dashboard-section">
                 <div class="section-header">
-                    <h2>🚨 Urgent Tasks</h2>
+                    <div class="dashboard-section-item">
+                        <div class="dashboard-icon">🚨</div>
+                        <h2>Urgent Tasks</h2>
+                    </div>
                 </div>
                 <div id="urgentTasks" class="tasks-list">
                     <p class="empty-state">No urgent tasks</p>
@@ -94,14 +101,20 @@
         <div class="dashboard-grid">
             <section class="dashboard-section">
                 <div class="section-header">
-                    <h2>📊 Time Distribution</h2>
+                    <div class="dashboard-section-item">
+                        <div class="dashboard-icon">📊</div>
+                        <h2>Time Distribution</h2>
+                    </div>
                 </div>
                 <canvas id="timeDistributionChart"></canvas>
             </section>
 
             <section class="dashboard-section">
                 <div class="section-header">
-                    <h2>📈 Weekly Progress</h2>
+                    <div class="dashboard-section-item">
+                        <div class="dashboard-icon">📈</div>
+                        <h2>Weekly Progress</h2>
+                    </div>
                 </div>
                 <canvas id="weeklyProgressChart"></canvas>
             </section>
@@ -109,7 +122,10 @@
 
         <section class="dashboard-section">
             <div class="section-header">
-                <h2>📋 All Tasks</h2>
+                <div class="dashboard-section-item">
+                    <div class="dashboard-icon">📋</div>
+                    <h2>All Tasks</h2>
+                </div>
                 <select id="taskFilter" onchange="filterTasks()">
                     <option value="all">All Tasks</option>
                     <option value="pending">Pending</option>
@@ -178,6 +194,6 @@
 
     <script src="assets/js/storage.js"></script>
     <script src="assets/js/ai-algorithms.js"></script>
-    <script src="assets/js/dashboard.js"></script>
+    <!-- <script src="assets/js/dashboard.js"></script> -->
 </body>
 </html>

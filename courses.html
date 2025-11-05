@@ -9,7 +9,8 @@
 <body class="dashboard-page">
     <nav class="sidebar">
         <div class="sidebar-header">
-            <h2>📚 Study Planner</h2>
+            <div class="dashboard-icon">📚</div>
+            <h2 class="">Study Planner</h2>
         </div>
         <ul class="sidebar-menu">
             <li><a href="dashboard.html">🏠 Dashboard</a></li>
@@ -26,21 +27,27 @@
     </nav>
 
     <main class="main-content">
-        <header class="dashboard-header">
-            <div class="header-left">
-                <h1>📖 Courses</h1>
-                <p>Manage your courses and update their information</p>
+        <div class="dashboard-header">
+            <div class="section-header">
+                <div class="header-left">
+                    <div class="dashboard-section-item">
+                        <div class="dashboard-icon">📖</div>
+                        <h1>Courses</h1>
+                    </div>
+                    <p>Manage your courses and update their information</p>
+                </div>
             </div>
             <div class="header-right">
                 <button class="btn btn-primary" onclick="openModal('addCourseModal')">
-                    ➕ Add New Course
+                     ➕ Add New Course
                 </button>
             </div>
-        </header>
-
-        <div id="coursesContainer" class="features-grid">
         </div>
+        <div id="coursesContainer" class="features-grid"></div>
     </main>
+
+        
+    
 
     <div id="addCourseModal" class="modal">
         <div class="modal-content">
@@ -117,8 +124,9 @@
             </form>
         </div>
     </div>
+    
 
     <script src="assets/js/storage.js"></script>
-    <script src="assets/js/courses.js"></script>
+    <!-- <script src="assets/js/courses.js"></script> -->
 </body>
 </html>
