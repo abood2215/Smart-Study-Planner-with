@@ -1,0 +1,31 @@
+# Environment & Secrets
+.env
+*.env.local
+
+# Dependencies
+/node_modules
+/vendor
+
+# Uploads & User Data
+/uploads
+
+# Logs
+/logs/*.log
+/logs/*.txt
+
+# IDE & OS Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Temporary Files
+*.tmp
+*.bak
+*.cache
+
+# Legacy (optional - keep for reference)
+# /legacy/

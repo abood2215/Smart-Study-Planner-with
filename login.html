@@ -16,6 +16,7 @@
 
                 <form id="loginForm">
                     <div class="alert alert-error" id="errorMsg"></div>
+                    <div class="alert alert-success" id="successMsg"></div>
 
                     <div class="input-group">
                         <label>📧 Email</label>
@@ -26,7 +27,7 @@
                         <label>🔑 Password</label>
                         <div class="input-wrapper">
                             <input type="password" id="password" name="password" required placeholder="">
-                            <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <button type="button" class="toggle-password" onclick="togglePassword('password')">
                                 👁️
                             </button>
                         </div>
@@ -71,6 +72,6 @@
         </div>
     </div>
 
-    <script src="assets/js/login.js"></script>
+    <script src="assets/js/login-new.js"></script>
 </body>
 </html>

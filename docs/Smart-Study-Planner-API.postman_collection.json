@@ -1,0 +1,612 @@
+{
+  "info": {
+    "name": "Smart Study Planner API",
+    "_postman_id": "smart-study-planner-api",
+    "description": "Complete API collection for Smart Study Planner",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost/Smart-Study-Planner-with/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ahmad Test\",\n  \"email\": \"ahmad@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth.php?action=register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth.php"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "register"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ahmad@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth.php?action=login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth.php"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "login"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth.php?action=profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth.php"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "profile"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ahmad Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth.php?action=profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth.php"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "profile"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Preferences",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth.php?action=preferences",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth.php"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "preferences"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Preferences",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"preferred_study_time\": \"evening\",\n  \"daily_study_hours\": 6\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth.php?action=preferences",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth.php"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "preferences"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Get All Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses.php",
+              "host": ["{{baseUrl}}"],
+              "path": ["courses.php"]
+            }
+          }
+        },
+        {
+          "name": "Get Course by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses.php?id=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["courses.php"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Web Development\",\n  \"difficulty\": \"medium\",\n  \"total_hours\": 40,\n  \"completed_hours\": 0,\n  \"progress\": 0,\n  \"performance\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses.php",
+              "host": ["{{baseUrl}}"],
+              "path": ["courses.php"]
+            }
+          }
+        },
+        {
+          "name": "Update Course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Advanced Web Development\",\n  \"difficulty\": \"hard\",\n  \"performance\": 85\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses.php?id=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["courses.php"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Course",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses.php?id=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["courses.php"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Course Progress",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completed_hours\": 25\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courses.php?id=1&action=progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["courses.php"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                },
+                {
+                  "key": "action",
+                  "value": "progress"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Course Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/courses.php?action=statistics",
+              "host": ["{{baseUrl}}"],
+              "path": ["courses.php"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "statistics"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks.php",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks.php"]
+            }
+          }
+        },
+        {
+          "name": "Get Task by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks.php?id=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks.php"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"course_id\": 1,\n  \"title\": \"Complete Chapter 5\",\n  \"description\": \"Read and understand React Hooks\",\n  \"deadline\": \"2025-11-20\",\n  \"difficulty\": \"medium\",\n  \"estimated_hours\": 5,\n  \"progress\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks.php",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks.php"]
+            }
+          }
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Complete Chapter 5 - Updated\",\n  \"progress\": 50,\n  \"status\": \"in_progress\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks.php?id=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks.php"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks.php?id=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks.php"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Task Progress",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completed_hours\": 3,\n  \"progress\": 60\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks.php?id=1&action=progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks.php"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                },
+                {
+                  "key": "action",
+                  "value": "progress"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Urgent Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks.php?action=urgent",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks.php"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "urgent"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Task Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks.php?action=statistics",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks.php"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "statistics"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter Tasks by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks.php?status=in_progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks.php"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "in_progress"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -179,6 +179,24 @@
         <div class="dashboard-section">
             <div class="section-header">
                 <div class="dashboard-section-item">
+                    <div class="dashboard-icon">🤖</div>
+                    <h2>AI-Powered Study Insights</h2>
+                </div>
+                <button class="btn btn-primary" onclick="loadAIInsights()" id="refreshInsights">
+                    🔄 Refresh Insights
+                </button>
+            </div>
+            <div id="aiInsightsContainer" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 24px; border-radius: 12px; margin-top: 16px;">
+                <div style="text-align: center; padding: 20px; color: #666;">
+                    <div style="font-size: 48px; margin-bottom: 12px;">🤖</div>
+                    <p>Click "Refresh Insights" to get AI-powered analysis of your study performance</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <div class="section-header">
+                <div class="dashboard-section-item">
                     <div class="dashboard-icon">📖</div>
                     <h2>Course Details</h2>
                 </div>
@@ -202,9 +220,10 @@
         </div>
     </main>
 
-    <script src="assets/js/storage.js"></script>
+    <!-- <script src="assets/js/storage.js"></script>
     <script src="assets/js/ai-algorithms.js"></script>
-    <script src="assets/js/analytics.js"></script>
+    <script src="assets/js/analytics.js"></script> -->
+    <script src="assets/js/analytics-api.js"></script>
 </body>
 
 </html>
