@@ -3,6 +3,20 @@
     RewriteEngine On
     RewriteBase /Smart-Study-Planner-with/
 
+    # Route HTML pages from root to frontend/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.+\.html)$ frontend/$1 [L]
+
+    # Route assets (CSS, JS, images) from root to frontend/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^assets/(.+)$ frontend/assets/$1 [L]
+
+    # Route API requests to backend/api/
+    RewriteRule ^api/(.+)\.php$ backend/api/$1.php [L]
+    RewriteRule ^api/$ api.php [L]
+
     # Allow cross-origin requests
     Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
@@ -16,8 +30,8 @@
     # Prevent directory listing
     Options -Indexes
 
-    # Protect sensitive files
-    <FilesMatch "^(config\.php|\.env)$">
+    # Protect sensitive files and backend config
+    <FilesMatch "^(config\.php|\.env|backend/.*)$">
         Order allow,deny
         Deny from all
     </FilesMatch>

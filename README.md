@@ -87,66 +87,41 @@ php test-system.php
 
 ---
 
-## 📁 البنية
+## 📁 البنية المنظمة الجديدة
+
+المشروع الآن مقسّم إلى **Backend** و **Frontend**:
 
 ```
 Smart-Study-Planner-with/
 │
-├── 📂 api/                  # REST API Endpoints
-│   ├── auth.php            # Authentication API
-│   ├── tasks.php           # Tasks CRUD API
-│   ├── courses.php         # Courses API
-│   ├── schedule.php        # Schedule API
-│   ├── generate-schedule.php  # AI Schedule Generator
-│   ├── progress.php        # Progress Tracking
-│   └── ai.php              # AI Features
+├── 📂 backend/              # Server-Side API (PHP)
+│   ├── api/                 # API Endpoints
+│   ├── controllers/         # Business Logic
+│   ├── models/              # Database Models
+│   ├── includes/            # Core System
+│   ├── database/            # SQL Files & Scripts
+│   ├── scripts/             # Utility Scripts
+│   └── logs/                # Application Logs
 │
-├── 📂 controllers/          # Business Logic (MVC Pattern)
-│   ├── AuthController.php
-│   ├── TaskController.php
-│   ├── CourseController.php
-│   └── AIController.php
+├── 📂 frontend/             # Client-Side UI (HTML/CSS/JS)
+│   ├── *.html               # Pages
+│   ├── assets/css/          # Styles
+│   ├── assets/js/           # JavaScript
+│   └── pages/               # Additional Pages
 │
-├── 📂 models/               # Database Models
-│   ├── User.php
-│   ├── Task.php
-│   └── Course.php
+├── 📂 docs/                 # Documentation & API Collection
 │
-├── 📂 includes/             # Core Files
-│   ├── config.php          # App configuration
-│   ├── db.php              # Database connection
-│   ├── functions.php       # Helper functions
-│   ├── GeminiService.php   # AI integration
-│   └── dotenv.php          # Environment loader
-│
-├── 📂 database/             # Database Files
-│   └── schema.sql          # Database structure
-│
-├── 📂 assets/               # Frontend Assets
-│   ├── css/style.css       # Styles
-│   └── js/                 # JavaScript files
-│       ├── login-new.js
-│       ├── register-new.js
-│       ├── dashboard-api.js
-│       ├── tasks-api.js
-│       ├── courses-api.js
-│       ├── schedule-api.js
-│       ├── analytics-api.js
-│       └── settings-api.js
-│
-├── 📂 docs/                 # Documentation & Testing
-│   ├── README.md
-│   └── Smart-Study-Planner-API.postman_collection.json
-│
-├── 📂 scripts/              # Utility Scripts
-│   ├── README.md
-│   ├── remove_comments.py
-│   └── remove_comments.sh
-│
-├── 📂 legacy/               # Old Files (Not Used)
-│   ├── README.md
-│   ├── index.php
-│   ├── login.php
+├── api.php                  # API Router (entry point)
+├── index.html               # Root redirect to frontend
+├── RESTRUCTURED.md          # Detailed structure docs
+└── README.md                # This file
+```
+
+**شوف [RESTRUCTURED.md](RESTRUCTURED.md) للتفاصيل الكاملة**
+
+---
+
+## 📁 البنية القديمة
 │   ├── register.php
 │   └── dashboard.php
 │

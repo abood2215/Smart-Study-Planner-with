@@ -31,6 +31,11 @@ define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') !== false ? getenv('GEMINI_API
 // Use the stable v1 endpoint by default; change if you need a different model.
 define('GEMINI_API_URL', getenv('GEMINI_API_URL') !== false ? getenv('GEMINI_API_URL') : 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-pro:generateContent');
 
+// OpenAI API Configuration
+// Get API keys at: https://platform.openai.com/api-keys
+define('OPENAI_API_KEY', getenv('OPENAI_API_KEY') !== false ? getenv('OPENAI_API_KEY') : 'YOUR_OPENAI_API_KEY_HERE');
+define('OPENAI_API_URL', getenv('OPENAI_API_URL') !== false ? getenv('OPENAI_API_URL') : 'https://api.openai.com/v1/chat/completions');
+
 // Timezone
 date_default_timezone_set('Asia/Amman');
 

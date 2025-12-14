@@ -105,10 +105,11 @@
 ---
 
 ### 8. `/scripts/` - Utility Scripts
-🛠️ سكريبتات مساعدة:
+🛠️ سكريبتات مساعدة (PHP فقط):
 
-- **remove_comments.py**: إزالة التعليقات من الكود (Python)
-- **remove_comments.sh**: إزالة التعليقات من الكود (Bash)
+- **remove_comments.php**: إزالة التعليقات من جميع ملفات PHP
+- **list_users.php**: عرض قائمة بجميع المستخدمين في قاعدة البيانات
+- **reset_password.php**: إعادة تعيين كلمة مرور المستخدم
 - **README.md**: شرح استخدام السكريبتات
 
 ---

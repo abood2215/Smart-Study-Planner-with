@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/chatbot.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .form-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            letter-spacing: -0.5px;
+        }
+
+        .form-header p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-content {
+            padding: 50px 40px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .back-button:hover {
+            color: #764ba2;
+            gap: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+            border-color: #d0d0d0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px 40px;
+            color: #667eea;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fadbd8;
+            color: #c0392b;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #c0392b;
+            font-weight: 500;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #155724;
+            font-weight: 500;
+        }
+
+        .form-hint {
+            font-size: 13px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .form-header {
+                padding: 35px 25px;
+            }
+
+            .form-header h1 {
+                font-size: 28px;
+            }
+
+            .form-content {
+                padding: 30px 25px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .form-header {
+                padding: 25px 15px;
+            }
+
+            .form-header h1 {
+                font-size: 24px;
+            }
+
+            .form-content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="tasks.html" class="back-button">← Back to Tasks</a>
+
+    <div class="container">
+        <div id="content">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading task details...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/chatbot.js"></script>
+    <script>
+        // Get task ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const taskId = urlParams.get('id');
+
+        if (!taskId) {
+            document.getElementById('content').innerHTML = `
+                <div class="form-header">
+                    <h1>Error</h1>
+                </div>
+                <div class="form-content">
+                    <div class="error">Task ID not specified in URL. Please use: edit-task.html?id=TASK_ID</div>
+                </div>
+            `;
+        } else {
+            fetchTaskDetails(taskId);
+        }
+
+        async function fetchTaskDetails(id) {
+            try {
+                const token = localStorage.getItem('auth_token');
+                
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch(`/Smart-Study-Planner-with/api/tasks.php?id=${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    const task = data.data;
+                    renderEditForm(task);
+                } else {
+                    throw new Error(data.message || 'Task not found');
+                }
+            } catch (error) {
+                console.error('Error fetching task:', error);
+                document.getElementById('content').innerHTML = `
+                    <div class="form-header">
+                        <h1>Error</h1>
+                    </div>
+                    <div class="form-content">
+                        <div class="error">
+                            <strong>Failed to load task details:</strong><br>
+                            ${error.message}
+                        </div>
+                        <button class="btn btn-primary" onclick="location.reload()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderEditForm(task) {
+            const deadline = task.deadline.split('T')[0]; // Format for input date
+            
+            let html = `
+                <div class="form-header">
+                    <h1>✏️ Edit Task</h1>
+                    <p>Update the task details below</p>
+                </div>
+
+                <div class="form-content">
+                    <form id="editForm" onsubmit="submitForm(event, '${task.id}')">
+                        <div class="form-group">
+                            <label for="title">Task Title *</label>
+                            <input type="text" id="title" name="title" value="${escapeHtml(task.title)}" required>
+                            <div class="form-hint">The main title of your task</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description">${escapeHtml(task.description || '')}</textarea>
+                            <div class="form-hint">Detailed information about the task</div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="deadline">Deadline *</label>
+                                <input type="date" id="deadline" name="deadline" value="${deadline}" required>
+                                <div class="form-hint">When is this task due?</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="difficulty">Difficulty</label>
+                                <select id="difficulty" name="difficulty">
+                                    <option value="easy" ${task.difficulty === 'easy' ? 'selected' : ''}>Easy</option>
+                                    <option value="medium" ${task.difficulty === 'medium' ? 'selected' : ''}>Medium</option>
+                                    <option value="hard" ${task.difficulty === 'hard' ? 'selected' : ''}>Hard</option>
+                                </select>
+                                <div class="form-hint">Task difficulty level</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select id="status" name="status">
+                                    <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="in_progress" ${task.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                                    <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                </select>
+                                <div class="form-hint">Current task status</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="progress">Progress (%)</label>
+                                <input type="number" id="progress" name="progress" min="0" max="100" value="${task.progress || 0}">
+                                <div class="form-hint">0-100% completion</div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                            <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+
+            document.getElementById('content').innerHTML = html;
+        }
+
+        async function submitForm(event, taskId) {
+            event.preventDefault();
+
+            const formData = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                deadline: document.getElementById('deadline').value,
+                difficulty: document.getElementById('difficulty').value,
+                status: document.getElementById('status').value,
+                progress: parseInt(document.getElementById('progress').value) || 0
+            };
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                
+                if (!token) {
+                    alert('Please log in first');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch(`/Smart-Study-Planner-with/api/tasks.php?id=${taskId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Show success message
+                    const formContent = document.querySelector('.form-content');
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'success';
+                    successMsg.innerHTML = '✓ Task updated successfully! Redirecting...';
+                    formContent.insertBefore(successMsg, formContent.firstChild);
+
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'task-details.html?id=' + taskId;
+                    }, 2000);
+                } else {
+                    alert('Failed to update task: ' + (data.message || 'Unknown error'));
+                    console.error('Update error:', data);
+                }
+            } catch (error) {
+                console.error('Error updating task:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Study Planner - Setup Verification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .check-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-left: 4px solid #ddd;
+            border-radius: 6px;
+        }
+        
+        .check-section h2 {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .check-item {
+            margin-bottom: 12px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-icon {
+            font-size: 20px;
+            font-weight: bold;
+            min-width: 30px;
+        }
+        
+        .status-ok {
+            color: #27ae60;
+        }
+        
+        .status-error {
+            color: #e74c3c;
+        }
+        
+        .status-warn {
+            color: #f39c12;
+        }
+        
+        .check-label {
+            flex: 1;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .check-section.success {
+            border-left-color: #27ae60;
+            background: #d5f4e6;
+        }
+        
+        .check-section.error {
+            border-left-color: #e74c3c;
+            background: #fadbd8;
+        }
+        
+        .check-section.warning {
+            border-left-color: #f39c12;
+            background: #fef5e7;
+        }
+        
+        .button-group {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d5dbdb;
+        }
+        
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7ff 0%, #f0f5ff 100%);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .summary h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .summary p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Smart Study Planner - Setup Verification</h1>
+        
+        <div id="checks"></div>
+        
+        <div class="button-group">
+            <a href="dashboard.html" class="btn-primary">📊 Go to Dashboard</a>
+            <a href="chatbot-test.html" class="btn-primary">🤖 Test Chatbot API</a>
+            <button class="btn-secondary" onclick="runChecks()">🔄 Run Checks Again</button>
+        </div>
+        
+        <div class="summary">
+            <h3>✅ Getting Started</h3>
+            <p>
+                <strong>Test Credentials:</strong><br>
+                Email: <code>ahmad@test.com</code> or <code>john@test.com</code><br>
+                Password: <code>password123</code><br><br>
+                
+                <strong>Quick Test:</strong><br>
+                1. Log in with test credentials<br>
+                2. Open Dashboard<br>
+                3. Click the 💬 button in the bottom-right corner<br>
+                4. Try sending "Hello" to the chatbot
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        async function runChecks() {
+            const checksDiv = document.getElementById('checks');
+            checksDiv.innerHTML = '<div class="check-section" style="text-align: center; color: #667eea;">⏳ Running checks...</div>';
+            
+            const checks = [];
+            
+            // Check 1: Can access dashboard
+            try {
+                const response = await fetch('dashboard.html');
+                checks.push({
+                    title: 'Files & Structure',
+                    name: 'Dashboard File',
+                    status: response.ok ? 'ok' : 'error',
+                    message: response.ok ? 'dashboard.html is accessible' : 'Cannot access dashboard.html'
+                });
+            } catch (e) {
+                checks.push({
+                    title: 'Files & Structure',
+                    name: 'Dashboard File',
+                    status: 'error',
+                    message: 'Network error: ' + e.message
+                });
+            }
+            
+            // Check 2: CSS Files
+            try {
+                const response = await fetch('assets/css/chatbot.css');
+                checks.push({
+                    title: 'Files & Structure',
+                    name: 'Chatbot CSS',
+                    status: response.ok ? 'ok' : 'error',
+                    message: response.ok ? 'chatbot.css loaded successfully' : 'Cannot load chatbot.css'
+                });
+            } catch (e) {
+                checks.push({
+                    title: 'Files & Structure',
+                    name: 'Chatbot CSS',
+                    status: 'error',
+                    message: 'Network error'
+                });
+            }
+            
+            // Check 3: JS Files
+            try {
+                const response = await fetch('assets/js/chatbot.js');
+                checks.push({
+                    title: 'Files & Structure',
+                    name: 'Chatbot JavaScript',
+                    status: response.ok ? 'ok' : 'error',
+                    message: response.ok ? 'chatbot.js loaded successfully' : 'Cannot load chatbot.js'
+                });
+            } catch (e) {
+                checks.push({
+                    title: 'Files & Structure',
+                    name: 'Chatbot JavaScript',
+                    status: 'error',
+                    message: 'Network error'
+                });
+            }
+            
+            // Check 4: Authentication
+            const token = localStorage.getItem('auth_token');
+            checks.push({
+                title: 'Authentication',
+                name: 'Login Status',
+                status: token ? 'ok' : 'warn',
+                message: token ? '✓ You are logged in' : '⚠ Not logged in (log in to use chatbot)'
+            });
+            
+            // Check 5: API Endpoint
+            try {
+                const response = await fetch('api/chatbot.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                // 401 is expected (no auth), anything else might be an issue
+                checks.push({
+                    title: 'API Endpoints',
+                    name: 'Chatbot API',
+                    status: response.status === 401 || response.ok ? 'ok' : 'error',
+                    message: `API responds with status ${response.status} (expected 401 without auth)`
+                });
+            } catch (e) {
+                checks.push({
+                    title: 'API Endpoints',
+                    name: 'Chatbot API',
+                    status: 'error',
+                    message: 'Cannot reach API: ' + e.message
+                });
+            }
+            
+            // Render checks
+            renderChecks(checks);
+        }
+        
+        function renderChecks(checks) {
+            const checksDiv = document.getElementById('checks');
+            checksDiv.innerHTML = '';
+            
+            // Group checks by section
+            const sections = {};
+            checks.forEach(check => {
+                if (!sections[check.title]) {
+                    sections[check.title] = [];
+                }
+                sections[check.title].push(check);
+            });
+            
+            // Render each section
+            Object.entries(sections).forEach(([sectionTitle, sectionChecks]) => {
+                const hasErrors = sectionChecks.some(c => c.status === 'error');
+                const hasWarnings = sectionChecks.some(c => c.status === 'warn');
+                
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = `check-section ${hasErrors ? 'error' : hasWarnings ? 'warning' : 'success'}`;
+                
+                let html = `<h2>`;
+                if (hasErrors) html += '❌';
+                else if (hasWarnings) html += '⚠️';
+                else html += '✅';
+                html += ` ${sectionTitle}</h2>`;
+                
+                sectionChecks.forEach(check => {
+                    html += `
+                        <div class="check-item">
+                            <span class="status-icon ${check.status === 'ok' ? 'status-ok' : check.status === 'warn' ? 'status-warn' : 'status-error'}">
+                                ${check.status === 'ok' ? '✓' : check.status === 'warn' ? '⚠' : '✗'}
+                            </span>
+                            <div>
+                                <div class="check-label"><strong>${check.name}</strong></div>
+                                <div class="check-label" style="font-size: 12px; color: #999;">${check.message}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                sectionDiv.innerHTML = html;
+                checksDiv.appendChild(sectionDiv);
+            });
+        }
+        
+        // Run checks on page load
+        window.addEventListener('load', runChecks);
+    </script>
+</body>
+</html>

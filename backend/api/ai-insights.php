@@ -1,4 +1,9 @@
 <?php
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
 /**
  * AI Insights API Endpoint
  * Provides AI-powered analysis and recommendations using OpenAI or Gemini
@@ -7,6 +12,7 @@
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/OpenAIService.php';
 
 // dotenv.php is already loaded in config.php, environment variables are available
 
@@ -85,8 +91,10 @@ try {
     $openaiKey = getenv('OPENAI_API_KEY');
     $geminiKey = getenv('GEMINI_API_KEY');
 
-    if ($openaiKey && $openaiKey !== 'your-openai-api-key-here') {
-        $insights = getOpenAIInsights($context, $action);
+    if ($openaiKey && $openaiKey !== 'your-openai-api-key-here' && strpos($openaiKey, 'sk-') === 0) {
+        // Use OpenAI Service for better handling
+        $aiService = new OpenAIService();
+        $insights = getOpenAIInsights($context, $action, $aiService);
     } elseif ($geminiKey && $geminiKey !== 'your-gemini-api-key-here') {
         $insights = getGeminiInsights($context, $action);
     } else {
@@ -110,56 +118,45 @@ try {
 }
 
 /**
- * Get insights from OpenAI
+ * Get insights from OpenAI using OpenAIService
  */
-function getOpenAIInsights($context, $action) {
-    $apiKey = getenv('OPENAI_API_KEY');
-    $apiUrl = getenv('OPENAI_API_URL') ?: 'https://api.openai.com/v1/chat/completions';
+function getOpenAIInsights($context, $action, $aiService = null) {
+    try {
+        if ($aiService === null) {
+            $aiService = new OpenAIService();
+        }
 
-    $prompt = "Based on the following student data, provide a comprehensive analysis with:\n\n";
-    $prompt .= "1. Overall Performance Assessment\n";
-    $prompt .= "2. Strengths and Areas for Improvement\n";
-    $prompt .= "3. Specific Study Recommendations\n";
-    $prompt .= "4. Time Management Tips\n";
-    $prompt .= "5. Priority Tasks to Focus On\n\n";
-    $prompt .= $context;
+        $systemPrompt = "You are an expert academic advisor and study planner. Provide clear, actionable, and encouraging advice to help students succeed. ";
+        $systemPrompt .= "Always respond in the same language as the student's course names. If Arabic course names detected, respond in Arabic with proper formatting. ";
+        $systemPrompt .= "Format your response with clear sections and bullet points for better readability.";
 
-    $data = [
-        'model' => 'gpt-3.5-turbo',
-        'messages' => [
+        $prompt = "Based on the following student data, provide a comprehensive analysis with:\n\n";
+        $prompt .= "1. Overall Performance Assessment\n";
+        $prompt .= "2. Strengths and Areas for Improvement\n";
+        $prompt .= "3. Specific Study Recommendations\n";
+        $prompt .= "4. Time Management Tips\n";
+        $prompt .= "5. Priority Tasks to Focus On\n\n";
+        $prompt .= $context;
+
+        $response = $aiService->generateInsights(
+            $systemPrompt . "\n\n" . $prompt,
             [
-                'role' => 'system',
-                'content' => 'You are an expert academic advisor and study planner. Provide clear, actionable, and encouraging advice to help students succeed.'
-            ],
-            [
-                'role' => 'user',
-                'content' => $prompt
+                'model' => 'gpt-4o-mini',
+                'temperature' => 0.7,
+                'max_tokens' => 1000
             ]
-        ],
-        'max_tokens' => 800,
-        'temperature' => 0.7
-    ];
+        );
 
-    $ch = curl_init($apiUrl);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
-    ]);
+        if (!$response['success']) {
+            error_log("OpenAI API Error: " . ($response['error'] ?? 'Unknown error'));
+            throw new Exception("OpenAI API request failed");
+        }
 
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    if ($httpCode !== 200) {
-        error_log("OpenAI API Error: HTTP $httpCode - $response");
-        throw new Exception("OpenAI API request failed");
+        return $response['content'];
+    } catch (Exception $e) {
+        error_log("OpenAI Insights Error: " . $e->getMessage());
+        throw $e;
     }
-
-    $result = json_decode($response, true);
-    return $result['choices'][0]['message']['content'] ?? 'Unable to generate insights';
 }
 
 /**
