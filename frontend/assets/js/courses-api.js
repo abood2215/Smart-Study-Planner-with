@@ -1,5 +1,8 @@
 // Courses Page with API Integration
-const API_BASE = 'http://localhost/Smart-Study-Planner-with/api';
+const API_BASE = 'http://localhost/Smart-Study-Planner-with/backend/api';
+
+// Store courses data globally for reference
+let coursesData = [];
 
 function getHeaders() {
     return {
@@ -53,12 +56,10 @@ async function loadCourses() {
         if (data.success) {
             displayCourses(data.data || []);
         } else {
-            console.error('Failed to load courses:', data.message);
             document.getElementById('coursesContainer').innerHTML =
                 '<p class="empty-state">⚠️ ' + (data.message || 'Failed to load courses') + '</p>';
         }
     } catch (error) {
-        console.error('Error loading courses:', error);
         document.getElementById('coursesContainer').innerHTML =
             '<p class="empty-state">⚠️ Error loading courses. Please make sure XAMPP is running.</p>';
     }
@@ -66,6 +67,9 @@ async function loadCourses() {
 
 function displayCourses(courses) {
     const container = document.getElementById('coursesContainer');
+
+    // Store courses data globally for reference in other functions
+    coursesData = courses;
 
     if (courses.length === 0) {
         container.innerHTML = '<p class="empty-state">No courses yet. Add your first course!</p>';
@@ -160,7 +164,6 @@ async function handleAddCourse(e) {
             alert('❌ Error: ' + (data.message || 'Failed to add course'));
         }
     } catch (error) {
-        console.error('Error adding course:', error);
         alert('❌ Error adding course. Please try again.');
     }
 }
@@ -196,7 +199,6 @@ async function editCourse(courseId) {
             alert('❌ Failed to load course details');
         }
     } catch (error) {
-        console.error('Error loading course:', error);
         alert('❌ Error loading course details');
     }
 }
@@ -238,18 +240,29 @@ async function handleEditCourse(e) {
             alert('❌ Error: ' + (data.message || 'Failed to update course'));
         }
     } catch (error) {
-        console.error('Error updating course:', error);
         alert('❌ Error updating course. Please try again.');
     }
 }
 
 async function updateProgress(courseId) {
-    const newProgress = prompt('Enter new progress (0-100):');
-    if (newProgress === null) return;
+    // Find the course to get total_hours
+    const course = coursesData.find(c => c.id == courseId);
+    if (!course) {
+        alert('❌ Course not found');
+        return;
+    }
 
-    const progress = parseFloat(newProgress);
-    if (isNaN(progress) || progress < 0 || progress > 100) {
-        alert('❌ Please enter a valid number between 0 and 100');
+    const totalHours = parseFloat(course.total_hours || 0);
+
+    // Ask user for completed hours directly (more accurate than percentage)
+    const currentCompleted = parseFloat(course.completed_hours || 0);
+    const newCompletedHours = prompt(`Enter completed hours (0-${totalHours}):\nCurrent: ${currentCompleted}h`);
+
+    if (newCompletedHours === null) return;
+
+    const completedHours = parseFloat(newCompletedHours);
+    if (isNaN(completedHours) || completedHours < 0 || completedHours > totalHours) {
+        alert(`❌ Please enter a valid number between 0 and ${totalHours}`);
         return;
     }
 
@@ -257,19 +270,19 @@ async function updateProgress(courseId) {
         const response = await fetch(`${API_BASE}/courses.php?id=${courseId}&action=progress`, {
             method: 'PUT',
             headers: getHeaders(),
-            body: JSON.stringify({ progress })
+            body: JSON.stringify({ completed_hours: completedHours })
         });
 
         const data = await response.json();
 
         if (data.success) {
-            alert('✅ Progress updated successfully!');
+            const newProgress = data.data ? data.data.progress : ((completedHours / totalHours) * 100).toFixed(1);
+            alert(`✅ Progress updated successfully!\nNew progress: ${newProgress}%`);
             await loadCourses();
         } else {
             alert('❌ Error: ' + (data.message || 'Failed to update progress'));
         }
     } catch (error) {
-        console.error('Error updating progress:', error);
         alert('❌ Error updating progress. Please try again.');
     }
 }
@@ -294,7 +307,6 @@ async function deleteCourse(courseId) {
             alert('❌ Error: ' + (data.message || 'Failed to delete course'));
         }
     } catch (error) {
-        console.error('Error deleting course:', error);
         alert('❌ Error deleting course. Please try again.');
     }
 }

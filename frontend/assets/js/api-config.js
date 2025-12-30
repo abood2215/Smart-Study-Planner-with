@@ -1,6 +1,6 @@
 // API Configuration for Smart Study Planner
 const API_CONFIG = {
-    BASE_URL: 'http://localhost/Smart-Study-Planner-with/api',
+    BASE_URL: 'http://localhost/Smart-Study-Planner-with/backend/api',
 
     // Helper to get stored token
     getToken: function() {
@@ -54,7 +54,6 @@ const API_CONFIG = {
 
             return data;
         } catch (error) {
-            console.error('API Error:', error);
             throw error;
         }
     }

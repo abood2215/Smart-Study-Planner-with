@@ -14,7 +14,6 @@ class ChatWidget {
         this.createWidget();
         this.attachEventListeners();
         this.loadChatHistory();
-        console.log('✅ ChatBot Widget initialized successfully');
     }
 
     createWidget() {
@@ -144,7 +143,6 @@ class ChatWidget {
             this.addMessage(response, 'bot');
         } catch (error) {
             this.removeTypingIndicator();
-            console.error('Chat error:', error);
             this.addMessage(
                 '😊 I encountered a small error. Here are some study tips: Break your tasks into smaller chunks, use the Pomodoro technique (25 min focus + 5 min break), and take regular breaks!',
                 'bot'
@@ -218,15 +216,13 @@ class ChatWidget {
         try {
             // Get the correct API path based on current location
             const currentPath = window.location.pathname;
-            let apiPath = 'api/chatbot.php';
+            let apiPath = '/Smart-Study-Planner-with/backend/api/chatbot.php';
             
             // If we're in the root or need absolute path
             if (!currentPath.includes('/frontend/')) {
-                apiPath = '/Smart-Study-Planner-with/api/chatbot.php';
+                apiPath = '/Smart-Study-Planner-with/backend/api/chatbot.php';
             }
             
-            console.log('📡 Calling API:', apiPath);
-            console.log('🔐 Token:', token.substring(0, 20) + '...');
 
             const response = await fetch(apiPath, {
                 method: 'POST',
@@ -239,11 +235,9 @@ class ChatWidget {
                 })
             });
 
-            console.log('📊 API Response Status:', response.status);
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('❌ API Error Response:', errorText);
                 
                 if (response.status === 401) {
                     return "Authentication failed. Please log in again!";
@@ -252,7 +246,6 @@ class ChatWidget {
             }
 
             const data = await response.json();
-            console.log('✅ API Response Data:', data);
 
             if (data.success) {
                 return data.data.response;
@@ -260,7 +253,6 @@ class ChatWidget {
                 return data.message || "Unable to get response. Please try again.";
             }
         } catch (error) {
-            console.error('❌ Chat API Error:', error);
             // Return fallback response
             return this.getFallbackResponse(message);
         }

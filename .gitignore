@@ -26,6 +26,34 @@ Thumbs.db
 *.tmp
 *.bak
 *.cache
+*.claude
+
+# Database
+/backend/includes/db.php
+*.sql.backup
+*.sql.bak
+
+# Debug & Test Scripts
+debug-check.php
+fix-task-deadlines.php
+test_*.php
+check_*.php
+
+# PHP Sessions & Cache
+/sessions
+/cache
+*.sess
+
+# Documentation (generated/temporary)
+*_DOCUMENTATION.md
+*_GUIDE.md
+*_README.md
+*_FIX*.md
+*_SUMMARY.md
+INSTRUCTIONS.md
+
+# Composer
+composer.lock
 
 # Legacy (optional - keep for reference)
 # /legacy/

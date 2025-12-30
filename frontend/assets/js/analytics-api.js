@@ -1,5 +1,5 @@
 // Analytics Page with API Integration and AI Insights
-const API_BASE = 'http://localhost/Smart-Study-Planner-with/api';
+const API_BASE = 'http://localhost/Smart-Study-Planner-with/backend/api';
 
 let allCourses = [];
 let allTasks = [];
@@ -50,7 +50,6 @@ async function loadData() {
             displayCourseBreakdown();
         }
     } catch (error) {
-        console.error('Error loading data:', error);
     }
 }
 
@@ -304,22 +303,18 @@ async function loadAIInsights() {
     `;
 
     try {
-        console.log('Fetching AI insights from:', `${API_BASE}/ai-insights.php`);
-        console.log('Using token:', token.substring(0, 20) + '...');
 
         const response = await fetch(`${API_BASE}/ai-insights.php`, {
             method: 'GET',
             headers: getHeaders()
         });
 
-        console.log('Response status:', response.status);
 
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
         const data = await response.json();
-        console.log('Response data:', data);
 
         if (data.success) {
             displayAIInsights(data.data.insights);
@@ -334,7 +329,6 @@ async function loadAIInsights() {
             `;
         }
     } catch (error) {
-        console.error('Error loading AI insights:', error);
         container.innerHTML = `
             <div style="text-align: center; padding: 20px; color: #dc2626;">
                 <div style="font-size: 48px; margin-bottom: 12px;">❌</div>

@@ -1,5 +1,5 @@
 // Calendar Page with API Integration
-const API_BASE = 'http://localhost/Smart-Study-Planner-with/api';
+const API_BASE = 'http://localhost/Smart-Study-Planner-with/backend/api';
 
 let currentDate = new Date();
 let allTasks = [];
@@ -50,7 +50,6 @@ async function loadData() {
         if (tasksData.success) allTasks = tasksData.data || [];
         if (schedulesData.success) allSchedules = schedulesData.data || [];
     } catch (error) {
-        console.error('Error loading data:', error);
     }
 }
 

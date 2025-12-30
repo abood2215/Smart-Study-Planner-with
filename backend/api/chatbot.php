@@ -22,11 +22,6 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/OpenAIService.php';
 
 try {
-    // Set UTF-8 encoding for database
-    if (function_exists('mysqli_set_charset')) {
-        mysqli_set_charset($GLOBALS['connection'], 'utf8mb4');
-    }
-    
     // Debug: Log request headers
     logMessage("Chatbot API Request - Method: " . $_SERVER['REQUEST_METHOD'] . ", Headers: " . json_encode(getallheaders()), 'INFO');
     

@@ -1,5 +1,5 @@
 // Schedule Page with API Integration
-const API_BASE = 'http://localhost/Smart-Study-Planner-with/api';
+const API_BASE = 'http://localhost/Smart-Study-Planner-with/backend/api';
 
 let userPreferences = null;
 
@@ -55,7 +55,6 @@ async function loadPreferences() {
                 preferredTime.charAt(0).toUpperCase() + preferredTime.slice(1);
         }
     } catch (error) {
-        console.error('Error loading preferences:', error);
     }
 }
 
@@ -72,11 +71,9 @@ async function loadSchedule() {
             displaySchedule(schedules);
             updateActiveTasks(schedules);
         } else {
-            console.error('Failed to load schedule:', data.message);
             showEmptySchedule();
         }
     } catch (error) {
-        console.error('Error loading schedule:', error);
         showError('Error loading schedule. Please make sure XAMPP is running.');
     }
 }
@@ -94,7 +91,6 @@ function displaySchedule(schedules) {
     const scheduleBody = document.getElementById('scheduleBody');
 
     if (!dailyBreakdown) {
-        console.error('Schedule container not found');
         return;
     }
 
@@ -298,7 +294,6 @@ async function generateWeeklySchedule() {
             await loadSchedule();
         }
     } catch (error) {
-        console.error('Error generating schedule:', error);
         alert('❌ Error generating schedule. Please try again.');
         await loadSchedule();
     }
@@ -334,7 +329,6 @@ async function markScheduleComplete(scheduleId) {
             alert('❌ Error: ' + (data.message || 'Failed to mark session as complete'));
         }
     } catch (error) {
-        console.error('Error marking session complete:', error);
         alert('❌ Error marking session complete. Please try again.');
     }
 }

@@ -1,5 +1,5 @@
 // Settings Page with API Integration
-const API_BASE = 'http://localhost/Smart-Study-Planner-with/api';
+const API_BASE = 'http://localhost/Smart-Study-Planner-with/backend/api';
 
 let currentUser = null;
 let currentPreferences = null;
@@ -61,11 +61,9 @@ async function loadUserData() {
             // Load preferences
             loadPreferences();
         } else {
-            console.error('Failed to load user data:', profileData.message);
             alert('Error loading user data: ' + profileData.message);
         }
     } catch (error) {
-        console.error('Error loading user data:', error);
         alert('Error loading user data. Please refresh the page.');
     }
 }
@@ -106,7 +104,6 @@ async function loadStatistics() {
             document.getElementById('dataSize').textContent = dataSize;
         }
     } catch (error) {
-        console.error('Error loading statistics:', error);
     }
 }
 
@@ -142,7 +139,6 @@ async function savePreferences() {
             alert('❌ Error saving preferences: ' + (data.message || 'Unknown error'));
         }
     } catch (error) {
-        console.error('Error saving preferences:', error);
         alert('❌ Error saving preferences. Please try again.');
     }
 }
@@ -188,7 +184,6 @@ async function exportData() {
 
         alert('✅ Data exported successfully!');
     } catch (error) {
-        console.error('Error exporting data:', error);
         alert('❌ Error exporting data. Please try again.');
     }
 }
@@ -229,7 +224,6 @@ async function importData(event) {
                         });
                         if ((await response.json()).success) importedCourses++;
                     } catch (err) {
-                        console.error('Error importing course:', err);
                     }
                 }
 
@@ -238,14 +232,12 @@ async function importData(event) {
                 // Reload page
                 window.location.reload();
             } catch (err) {
-                console.error('Error parsing import file:', err);
                 alert('❌ Error reading import file. Please check the file format.');
             }
         };
 
         reader.readAsText(file);
     } catch (error) {
-        console.error('Error importing data:', error);
         alert('❌ Error importing data. Please try again.');
     }
 }
@@ -281,7 +273,6 @@ async function clearAllData() {
                     });
                     if ((await response.json()).success) deletedTasks++;
                 } catch (err) {
-                    console.error('Error deleting task:', err);
                 }
             }
         }
@@ -296,7 +287,6 @@ async function clearAllData() {
                     });
                     if ((await response.json()).success) deletedCourses++;
                 } catch (err) {
-                    console.error('Error deleting course:', err);
                 }
             }
         }
@@ -306,7 +296,6 @@ async function clearAllData() {
         // Reload statistics
         await loadStatistics();
     } catch (error) {
-        console.error('Error clearing data:', error);
         alert('❌ Error clearing data. Please try again.');
     }
 }

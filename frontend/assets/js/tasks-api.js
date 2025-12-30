@@ -1,5 +1,5 @@
 // Tasks Page with API Integration
-const API_BASE = 'http://localhost/Smart-Study-Planner-with/api';
+const API_BASE = 'http://localhost/Smart-Study-Planner-with/backend/api';
 
 let allTasks = [];
 let allCourses = [];
@@ -67,11 +67,9 @@ async function loadData() {
             // Display tasks
             filterTasksDisplay();
         } else {
-            console.error('Failed to load data');
             showError('Failed to load data. Please refresh the page.');
         }
     } catch (error) {
-        console.error('Error loading data:', error);
         showError('Error loading data. Please make sure XAMPP is running.');
     }
 }
@@ -251,7 +249,6 @@ async function handleAddTask(e) {
             alert('❌ Error: ' + (data.message || 'Failed to add task'));
         }
     } catch (error) {
-        console.error('Error adding task:', error);
         alert('❌ Error adding task. Please try again.');
     }
 }
@@ -309,7 +306,6 @@ async function handleEditTask(e) {
             alert('❌ Error: ' + (data.message || 'Failed to update task'));
         }
     } catch (error) {
-        console.error('Error updating task:', error);
         alert('❌ Error updating task. Please try again.');
     }
 }
@@ -334,7 +330,6 @@ async function markComplete(taskId) {
             alert('❌ Error: ' + (data.message || 'Failed to mark task as complete'));
         }
     } catch (error) {
-        console.error('Error marking task complete:', error);
         alert('❌ Error marking task complete. Please try again.');
     }
 }
@@ -359,7 +354,6 @@ async function deleteTask(taskId) {
             alert('❌ Error: ' + (data.message || 'Failed to delete task'));
         }
     } catch (error) {
-        console.error('Error deleting task:', error);
         alert('❌ Error deleting task. Please try again.');
     }
 }

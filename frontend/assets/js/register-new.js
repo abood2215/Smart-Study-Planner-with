@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Call the new PHP Backend API
-            const response = await fetch('http://localhost/Smart-Study-Planner-with/api/auth.php?action=register', {
+            const response = await fetch('http://localhost/Smart-Study-Planner-with/backend/api/auth.php?action=register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         } catch (error) {
-            console.error('Registration error:', error);
             if (errorMsg) {
                 errorMsg.textContent = '❌ An error occurred. Please make sure XAMPP is running.';
                 errorMsg.classList.add('show');

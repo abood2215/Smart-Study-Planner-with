@@ -82,7 +82,7 @@
                     <button class="btn btn-sm" onclick="generateSchedule()">🤖 Generate Schedule</button>
                 </div>
                 <div id="todaySchedule" class="schedule-list">
-                    <p class="empty-state">No tasks for today. Try adding some tasks!</p>
+                    <p class="empty-state">No schedule yet. Click "🤖 Generate Schedule" to let AI create your optimized study plan!</p>
                 </div>
             </section>
 
@@ -152,6 +152,16 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="pagination" id="tasksPagination" style="display: none;">
+                <div class="pagination-info">
+                    <span id="paginationInfo">Showing 0-0 of 0 tasks</span>
+                </div>
+                <div class="pagination-controls">
+                    <button class="pagination-btn" id="prevPage" onclick="changePage(-1)">← Previous</button>
+                    <span id="pageNumbers"></span>
+                    <button class="pagination-btn" id="nextPage" onclick="changePage(1)">Next →</button>
+                </div>
             </div>
         </section>
     </main>

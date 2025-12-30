@@ -17,7 +17,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // API Configuration
-const API_BASE = 'http://localhost/Smart-Study-Planner-with/api';
+const API_BASE = 'http://localhost/Smart-Study-Planner-with/backend/api';
+
+// Pagination state
+let currentPage = 1;
+const tasksPerPage = 10;
+let allTasksData = [];
+let allCoursesData = [];
+let currentFilter = 'all';
 
 function getHeaders() {
     return {
@@ -88,12 +95,10 @@ async function loadDashboardData() {
             try {
                 updateCharts(courses, tasks);
             } catch (chartError) {
-                console.error('Error updating charts:', chartError);
                 // Charts error shouldn't break the whole page
             }
         }
     } catch (error) {
-        console.error('Error loading dashboard data:', error);
         // Only show full error if it's a network error
         if (error.message && error.message.includes('fetch')) {
             document.querySelector('.main-content').innerHTML =
@@ -114,18 +119,61 @@ function updateStats(courses, tasks) {
 
 function updateTodaySchedule(schedules) {
     const todayScheduleDiv = document.getElementById('todaySchedule');
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
 
+    // Get tomorrow as well (in case of timezone differences)
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+    // Show schedules for today OR the earliest available date
+    // This handles timezone differences between client and server
     const todaySchedules = schedules
-        .filter(s => s.scheduled_date === today)
+        .filter(s => {
+            const scheduleDate = String(s.scheduled_date).split(' ')[0];
+            // Match today, tomorrow, or if no matches, get the earliest future schedule
+            const match = scheduleDate === todayStr || scheduleDate === tomorrowStr;
+            return match;
+        })
         .sort((a, b) => a.start_time.localeCompare(b.start_time));
 
-    if (todaySchedules.length === 0) {
-        todayScheduleDiv.innerHTML = '<p class="empty-state">No scheduled tasks for today. Click "🔄 Refresh" to generate a schedule!</p>';
+    // If no schedules for today/tomorrow, show the earliest upcoming schedules
+    let displaySchedules = todaySchedules;
+    let headerText = "Your Schedule Today";
+
+    if (todaySchedules.length === 0 && schedules.length > 0) {
+        // Get the earliest date from all schedules
+        const earliestDate = schedules[0].scheduled_date.split(' ')[0];
+        displaySchedules = schedules.filter(s => s.scheduled_date.split(' ')[0] === earliestDate).slice(0, 5);
+
+        // Calculate days difference
+        const earliest = new Date(earliestDate);
+        const diffDays = Math.ceil((earliest - today) / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+            headerText = "Your Schedule Tomorrow";
+        } else if (diffDays > 1) {
+            headerText = `Upcoming Schedule (in ${diffDays} days)`;
+        }
+    }
+
+    if (displaySchedules.length === 0) {
+        todayScheduleDiv.innerHTML = '<p class="empty-state">📅 No schedule yet.<br>Click "🤖 Generate Schedule" button above to let AI create your optimized study plan!</p>';
         return;
     }
 
-    todayScheduleDiv.innerHTML = todaySchedules.map(schedule => `
+    // Update the section header if needed to show "Tomorrow" or "Upcoming"
+    const sectionHeaders = document.querySelectorAll('.dashboard-section h2');
+    sectionHeaders.forEach(header => {
+        if (header.textContent.includes('Your Schedule Today') ||
+            header.textContent.includes('Tomorrow') ||
+            header.textContent.includes('Upcoming')) {
+            header.textContent = headerText;
+        }
+    });
+
+    todayScheduleDiv.innerHTML = displaySchedules.map(schedule => `
         <div class="task-item ${schedule.status === 'completed' ? 'completed' : ''}">
             <div class="task-header">
                 <div>
@@ -145,21 +193,24 @@ function updateTodaySchedule(schedules) {
 function updateUrgentTasks(tasks, courses) {
     const urgentTasksDiv = document.getElementById('urgentTasks');
 
-    // Get tasks with upcoming deadlines (within 7 days)
+    // Get tasks with upcoming deadlines (within next 30 days)
     const today = new Date();
-    const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+    today.setHours(0, 0, 0, 0); // Reset time to start of day
+    const futureLimit = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
 
     const urgentTasks = tasks
         .filter(t => t.status !== 'completed')
         .filter(t => {
             const deadline = new Date(t.deadline);
-            return deadline >= today && deadline <= weekFromNow;
+            deadline.setHours(0, 0, 0, 0); // Reset time for fair comparison
+            const isUrgent = deadline >= today && deadline <= futureLimit;
+            return isUrgent;
         })
         .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
         .slice(0, 5);
 
     if (urgentTasks.length === 0) {
-        urgentTasksDiv.innerHTML = '<p class="empty-state">No urgent tasks</p>';
+        urgentTasksDiv.innerHTML = '<p class="empty-state">No urgent tasks in the next 30 days</p>';
         return;
     }
 
@@ -188,15 +239,39 @@ function updateUrgentTasks(tasks, courses) {
 }
 
 function updateAllTasksTable(tasks, courses) {
-    const tbody = document.getElementById('tasksTableBody');
+    // Store data globally for pagination and filtering
+    allTasksData = tasks;
+    allCoursesData = courses;
 
-    if (tasks.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No tasks yet</td></tr>';
+    // Render the current page
+    renderTasksPage();
+}
+
+function renderTasksPage() {
+    const tbody = document.getElementById('tasksTableBody');
+    const paginationDiv = document.getElementById('tasksPagination');
+
+    // Apply filter
+    let filteredTasks = allTasksData;
+    if (currentFilter !== 'all') {
+        filteredTasks = allTasksData.filter(t => t.status === currentFilter);
+    }
+
+    if (filteredTasks.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No tasks found</td></tr>';
+        paginationDiv.style.display = 'none';
         return;
     }
 
-    tbody.innerHTML = tasks.map(task => {
-        const course = courses.find(c => c.id === task.course_id);
+    // Calculate pagination
+    const totalPages = Math.ceil(filteredTasks.length / tasksPerPage);
+    const startIndex = (currentPage - 1) * tasksPerPage;
+    const endIndex = startIndex + tasksPerPage;
+    const paginatedTasks = filteredTasks.slice(startIndex, endIndex);
+
+    // Render table rows
+    tbody.innerHTML = paginatedTasks.map(task => {
+        const course = allCoursesData.find(c => c.id === task.course_id);
         const courseName = course ? course.name : 'No Course';
         const deadline = new Date(task.deadline).toLocaleDateString();
 
@@ -214,6 +289,75 @@ function updateAllTasksTable(tasks, courses) {
             </tr>
         `;
     }).join('');
+
+    // Show/update pagination
+    if (filteredTasks.length > tasksPerPage) {
+        paginationDiv.style.display = 'flex';
+        updatePagination(filteredTasks.length, totalPages);
+    } else {
+        paginationDiv.style.display = 'none';
+    }
+}
+
+function updatePagination(totalTasks, totalPages) {
+    const paginationInfo = document.getElementById('paginationInfo');
+    const pageNumbers = document.getElementById('pageNumbers');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+
+    // Update info text
+    const startIndex = (currentPage - 1) * tasksPerPage + 1;
+    const endIndex = Math.min(currentPage * tasksPerPage, totalTasks);
+    paginationInfo.textContent = `Showing ${startIndex}-${endIndex} of ${totalTasks} tasks`;
+
+    // Update prev/next buttons
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+
+    // Generate page numbers
+    let pages = '';
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+        // Show all pages
+        for (let i = 1; i <= totalPages; i++) {
+            pages += `<button class="page-number ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+        }
+    } else {
+        // Show first page
+        pages += `<button class="page-number ${currentPage === 1 ? 'active' : ''}" onclick="goToPage(1)">1</button>`;
+
+        // Show ellipsis or pages around current
+        if (currentPage > 3) {
+            pages += '<span class="page-ellipsis">...</span>';
+        }
+
+        const start = Math.max(2, currentPage - 1);
+        const end = Math.min(totalPages - 1, currentPage + 1);
+
+        for (let i = start; i <= end; i++) {
+            pages += `<button class="page-number ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+        }
+
+        // Show ellipsis or last page
+        if (currentPage < totalPages - 2) {
+            pages += '<span class="page-ellipsis">...</span>';
+        }
+
+        pages += `<button class="page-number ${currentPage === totalPages ? 'active' : ''}" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+    }
+
+    pageNumbers.innerHTML = pages;
+}
+
+function goToPage(page) {
+    currentPage = page;
+    renderTasksPage();
+}
+
+function changePage(direction) {
+    currentPage += direction;
+    renderTasksPage();
 }
 
 function populateCoursesDropdown(courses) {
@@ -321,7 +465,6 @@ async function handleAddTask(e) {
             alert('❌ Error: ' + (data.message || 'Failed to add task'));
         }
     } catch (error) {
-        console.error('Error adding task:', error);
         alert('❌ Error adding task. Please try again.');
     }
 }
@@ -335,8 +478,9 @@ function closeModal(modalId) {
 }
 
 function filterTasks() {
-    const filter = document.getElementById('taskFilter').value;
-    loadDashboardData(); // Reload with filter
+    currentFilter = document.getElementById('taskFilter').value;
+    currentPage = 1; // Reset to first page when filtering
+    renderTasksPage(); // Re-render with new filter
 }
 
 function viewTask(id) {
@@ -353,6 +497,10 @@ async function generateSchedule() {
         return;
     }
 
+    // Show loading state
+    const todayScheduleDiv = document.getElementById('todaySchedule');
+    todayScheduleDiv.innerHTML = '<p class="empty-state">🤖 AI is generating your personalized schedule...</p>';
+
     try {
         const response = await fetch(`${API_BASE}/generate-schedule.php`, {
             method: 'POST',
@@ -364,23 +512,25 @@ async function generateSchedule() {
         if (data.success) {
             const stats = data.data.stats || {};
 
+            // Show success message
             alert(`✅ Schedule Generated Successfully!\n\n` +
                   `📚 Courses: ${stats.total_courses || 0}\n` +
                   `📝 Tasks: ${stats.total_tasks || 0}\n` +
                   `📅 Study Sessions: ${stats.sessions_created || 0}\n\n` +
-                  `Your schedule is optimized based on:\n` +
-                  `- Task deadlines\n` +
-                  `- Course difficulty\n` +
-                  `- Your study preferences\n\n` +
-                  `View your schedule in the Weekly Schedule page.`);
+                  `Your AI-optimized schedule is based on:\n` +
+                  `- Task deadlines and urgency\n` +
+                  `- Course difficulty levels\n` +
+                  `- Your study time preferences\n` +
+                  `- Optimal learning patterns\n\n` +
+                  `Check "Your Schedule Today" section below!`);
 
-            // Reload dashboard data
+            // Reload dashboard data to show the new schedule
             await loadDashboardData();
         } else {
-            alert('⚠️ ' + (data.message || 'No schedule generated. Please add some tasks first!'));
+            todayScheduleDiv.innerHTML = '<p class="empty-state">⚠️ ' + (data.message || 'No schedule generated. Please add some tasks first!') + '</p>';
         }
     } catch (error) {
-        console.error('Error generating schedule:', error);
+        todayScheduleDiv.innerHTML = '<p class="empty-state">❌ Error generating schedule. Please make sure XAMPP is running and try again.</p>';
         alert('❌ Error generating schedule. Please make sure XAMPP is running and try again.');
     }
 }

@@ -4,7 +4,7 @@ require_once __DIR__ . '/config.php';
 
 class Database {
     private static $instance = null;
-    private $connection;
+    public $connection;
 
     private function __construct() {
         try {
