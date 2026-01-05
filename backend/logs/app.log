@@ -388,3 +388,16 @@
 [2026-01-05 21:26:55] [DEBUG] User 2 has access to project 4 (public)
 [2026-01-05 21:32:38] [DEBUG] User 2 has access to project 4 (public)
 [2026-01-05 21:32:38] [DEBUG] User 2 has access to project 4 (public)
+[2026-01-05 23:10:49] [DEBUG] User 2 has access to project 5 (owner)
+[2026-01-05 23:10:49] [DEBUG] User 2 has access to project 5 (owner)
+[2026-01-05 23:15:45] [INFO] Project 6 created successfully by user 2
+[2026-01-05 23:15:47] [DEBUG] User 2 has access to project 6 (owner)
+[2026-01-05 23:15:47] [DEBUG] User 2 has access to project 6 (owner)
+[2026-01-05 23:16:41] [DEBUG] User 2 has access to project 6 (owner)
+[2026-01-05 23:16:41] [DEBUG] Found 4 matching teammates for project 6
+[2026-01-05 23:16:48] [DEBUG] User 2 has access to project 6 (owner)
+[2026-01-05 23:16:48] [DEBUG] User 2 has access to project 6 (owner)
+[2026-01-05 23:17:07] [DEBUG] User 1 has access to project 6 (public)
+[2026-01-05 23:17:07] [DEBUG] User 1 has access to project 6 (public)
+[2026-01-05 23:17:13] [DEBUG] User 1 has access to project 6 (public)
+[2026-01-05 23:17:13] [DEBUG] Found 3 matching teammates for project 6

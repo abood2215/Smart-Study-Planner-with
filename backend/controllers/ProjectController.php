@@ -120,8 +120,9 @@ class ProjectController {
         }
 
         // Validate status
-        if (isset($data['status']) && !in_array($data['status'], ['active', 'completed', 'archived'])) {
-            sendError('Invalid status', 400);
+        $validStatuses = ['draft', 'in_progress', 'completed', 'canceled', 'closed', 'active', 'archived'];
+        if (isset($data['status']) && !in_array($data['status'], $validStatuses)) {
+            sendError('Invalid status. Must be one of: ' . implode(', ', $validStatuses), 400);
         }
 
         $result = $this->projectModel->create($user_id, $data);
@@ -159,8 +160,9 @@ class ProjectController {
         }
 
         // Validate status
-        if (isset($data['status']) && !in_array($data['status'], ['active', 'completed', 'archived'])) {
-            sendError('Invalid status', 400);
+        $validStatuses = ['draft', 'in_progress', 'completed', 'canceled', 'closed', 'active', 'archived'];
+        if (isset($data['status']) && !in_array($data['status'], $validStatuses)) {
+            sendError('Invalid status. Must be one of: ' . implode(', ', $validStatuses), 400);
         }
 
         $result = $this->projectModel->update($id, $data);
