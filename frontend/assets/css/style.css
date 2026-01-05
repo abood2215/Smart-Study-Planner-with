@@ -180,39 +180,39 @@ h4 { font-size: 1.25rem; }
 }
 
 .navbar {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: var(--shadow);
-    padding: 20px 0;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 0 8px 32px 0 rgba(155, 89, 182, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 0;
     position: sticky;
     top: 0;
     z-index: 1000;
-    animation: slideDown 0.5s ease;
+    animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: var(--transition);
+}
+
+.navbar.scrolled {
+    padding: 10px 0;
+    background: rgba(255, 255, 255, 0.85);
 }
 
 .logo-content {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
-/* Removed invert color mode */
-
-@keyframes slideDown {
-    from {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+.logo-content .feature-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0;
+    animation: float 3s ease-in-out infinite;
 }
 
-.navbar .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
 }
 
 .logo h2 {
@@ -220,13 +220,47 @@ h4 { font-size: 1.25rem; }
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    font-size: 1.75rem;
+    font-size: 1.6rem;
     font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .nav-links {
     display: flex;
-    gap: 16px;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--gray-700);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition-fast);
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    position: relative;
+}
+
+.nav-links a:not(.btn):hover {
+    color: var(--primary);
+    background: rgba(155, 89, 182, 0.05);
+}
+
+.nav-links a:not(.btn)::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-links a:not(.btn):hover::after {
+    transform: scaleX(1);
 }
 
 .hero {

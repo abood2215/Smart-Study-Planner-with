@@ -1,0 +1,345 @@
+[2026-01-03 11:34:42] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 11:34:51] [ERROR] Gemini API HTTP error (final): 400 - {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+[2026-01-03 11:35:01] [ERROR] Error fetching project statistics: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 11:35:18] [ERROR] Gemini API HTTP error (final): 400 - {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+[2026-01-03 11:58:15] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 11:59:39] [ERROR] Gemini API HTTP error (final): 400 - {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+[2026-01-03 12:04:14] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:04:50] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:05:21] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:05:24] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:05:24] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:05:25] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:05:25] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:05:25] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:05:25] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:05:25] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:05:28] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:05:40] [ERROR] Gemini API HTTP error (final): 400 - {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+[2026-01-03 12:05:46] [ERROR] Error fetching project statistics: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 12:06:14] [INFO] Chatbot API Request - Method: POST, Headers: {"Host":"localhost","Connection":"keep-alive","Content-Length":"22","sec-ch-ua-platform":"\"Windows\"","Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc1MTcwODl9.81d3afe91a5888665c952062011182e8d712c2192a498b4405a52b0e96a71a77","User-Agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/143.0.0.0 Safari\/537.36 Edg\/143.0.0.0","sec-ch-ua":"\"Microsoft Edge\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"","Content-Type":"application\/json; charset=utf-8","sec-ch-ua-mobile":"?0","Accept":"*\/*","Origin":"http:\/\/localhost","Sec-Fetch-Site":"same-origin","Sec-Fetch-Mode":"cors","Sec-Fetch-Dest":"empty","Referer":"http:\/\/localhost\/Smart-Study-Planner-with\/frontend\/dashboard.html","Accept-Encoding":"gzip, deflate, br, zstd","Accept-Language":"en,ar;q=0.9,en-GB;q=0.8,en-US;q=0.7"}
+[2026-01-03 12:06:21] [INFO] Chatbot API Request - Method: POST, Headers: {"Host":"localhost","Connection":"keep-alive","Content-Length":"46","sec-ch-ua-platform":"\"Windows\"","Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc1MTcwODl9.81d3afe91a5888665c952062011182e8d712c2192a498b4405a52b0e96a71a77","User-Agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/143.0.0.0 Safari\/537.36 Edg\/143.0.0.0","sec-ch-ua":"\"Microsoft Edge\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"","Content-Type":"application\/json; charset=utf-8","sec-ch-ua-mobile":"?0","Accept":"*\/*","Origin":"http:\/\/localhost","Sec-Fetch-Site":"same-origin","Sec-Fetch-Mode":"cors","Sec-Fetch-Dest":"empty","Referer":"http:\/\/localhost\/Smart-Study-Planner-with\/frontend\/dashboard.html","Accept-Encoding":"gzip, deflate, br, zstd","Accept-Language":"en,ar;q=0.9,en-GB;q=0.8,en-US;q=0.7"}
+[2026-01-03 12:06:31] [INFO] Chatbot API Request - Method: POST, Headers: {"Host":"localhost","Connection":"keep-alive","Content-Length":"49","sec-ch-ua-platform":"\"Windows\"","Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3Njc1MTcwODl9.81d3afe91a5888665c952062011182e8d712c2192a498b4405a52b0e96a71a77","User-Agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/143.0.0.0 Safari\/537.36 Edg\/143.0.0.0","sec-ch-ua":"\"Microsoft Edge\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"","Content-Type":"application\/json; charset=utf-8","sec-ch-ua-mobile":"?0","Accept":"*\/*","Origin":"http:\/\/localhost","Sec-Fetch-Site":"same-origin","Sec-Fetch-Mode":"cors","Sec-Fetch-Dest":"empty","Referer":"http:\/\/localhost\/Smart-Study-Planner-with\/frontend\/dashboard.html","Accept-Encoding":"gzip, deflate, br, zstd","Accept-Language":"en,ar;q=0.9,en-GB;q=0.8,en-US;q=0.7"}
+[2026-01-03 14:44:52] [ERROR] Error fetching project statistics: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 14:45:23] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 14:45:30] [ERROR] Gemini API HTTP error (final): 400 - {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+[2026-01-03 14:47:21] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 14:47:30] [ERROR] Gemini API HTTP error (final): 400 - {
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+
+[2026-01-03 14:53:10] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 14:53:11] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 14:55:07] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 14:55:35] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 14:56:33] [ERROR] Error fetching project statistics: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 14:56:38] [ERROR] Error fetching project statistics: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 15:00:24] [ERROR] Error fetching project statistics: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 15:00:27] [ERROR] Error fetching project statistics: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-03 15:01:25] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 18:51:57] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 18:53:06] [ERROR] Error checking project access: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 18:53:17] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 18:58:52] [ERROR] Error checking project access: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 18:58:55] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 18:59:00] [ERROR] Error checking project access: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 18:59:03] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 18:59:44] [ERROR] Error checking project access: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:01:33] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:02:10] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:04:30] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:04:33] [ERROR] Error checking project access: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:04:33] [WARNING] Access denied for user 1 to project 1 (owner: 1, is_public: 1)
+[2026-01-05 19:04:39] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:04:42] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:04:45] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:06:48] [ERROR] Error checking project access: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:06:48] [WARNING] Access denied for user 1 to project 1 (owner: 1, is_public: 1)
+[2026-01-05 19:06:50] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:37] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:38] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:38] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:38] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:39] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:40] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:40] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:40] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:40] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:41] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:07:41] [ERROR] Error fetching user projects: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:08:24] [ERROR] Error checking project access: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:08:24] [WARNING] Access denied for user 1 to project 2 (owner: 1, is_public: 1)
+[2026-01-05 19:11:42] [INFO] Project 3 created successfully by user 1
+[2026-01-05 19:11:42] [DEBUG] User 1 has access to project 3 (owner)
+[2026-01-05 19:12:56] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:13:12] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:13:18] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:15:05] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:15:38] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:17:37] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:17:47] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:09] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:09] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:10] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:10] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:10] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:30] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:31] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:31] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:37] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:41] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:18:56] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:20:57] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:21:19] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:21:36] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:22:03] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:22:37] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:24:58] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:08] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:08] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:09] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:09] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:09] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:10] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:10] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:10] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:10] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:11] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:11] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:11] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:11] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:27:11] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:29:12] [INFO] Project 4 created successfully by user 1
+[2026-01-05 19:29:15] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:29:23] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:30:19] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:31:22] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:31:23] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:31:23] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:31:24] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:31:24] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:31:24] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:31:24] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:31:25] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:31:53] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:32:19] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:32:20] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:32:20] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:32:20] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:32:21] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:32:21] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:32:21] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:32:21] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:33:04] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:33:04] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:33:04] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:33:05] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:33:05] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:33:05] [DEBUG] User 1 has access to project 1 (owner)
+[2026-01-05 19:33:48] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:33:56] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:34:00] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:34:01] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:34:01] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:34:01] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:34:44] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:40:43] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:40:54] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:41:05] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:41:05] [ERROR] Error finding matching teammates: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:41:07] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:41:07] [ERROR] Error finding matching teammates: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:41:07] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:41:07] [ERROR] Error finding matching teammates: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:41:49] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:41:56] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:42:50] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:42:55] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:42:56] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:43:03] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:43:22] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:43:26] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:43:31] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:12] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:44:16] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:17] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:17] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:17] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:17] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:17] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:18] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:32] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:33] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:33] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:33] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:33] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:33] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:44:53] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:44:57] [ERROR] Error searching users: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:48:12] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:48:12] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:48:13] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:48:13] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:48:20] [DEBUG] Search users: found 1 users for term: sarah@test.com
+[2026-01-05 19:48:27] [DEBUG] Search users: found 0 users for term: sarah22@test.com
+[2026-01-05 19:48:31] [DEBUG] Search users: found 1 users for term: sarah@test.com
+[2026-01-05 19:48:35] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:48:54] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:48:54] [ERROR] Error finding matching teammates: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:48:59] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:48:59] [ERROR] Error finding matching teammates: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:48:59] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:48:59] [ERROR] Error finding matching teammates: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:49:00] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:49:00] [ERROR] Error finding matching teammates: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:49:03] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:49:03] [ERROR] Error finding matching teammates: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:50:48] [ERROR] Error finding matching teammates: SQLSTATE[HY093]: Invalid parameter number
+[2026-01-05 19:52:41] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:52:48] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:52:48] [DEBUG] Found 3 matching teammates for project 4
+[2026-01-05 19:53:17] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:53:25] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:53:25] [DEBUG] Found 2 matching teammates for project 4
+[2026-01-05 19:53:35] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:53:35] [DEBUG] Found 2 matching teammates for project 4
+[2026-01-05 19:53:35] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:53:35] [DEBUG] Found 2 matching teammates for project 4
+[2026-01-05 19:53:36] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:53:36] [DEBUG] Found 2 matching teammates for project 4
+[2026-01-05 19:53:44] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:53:48] [DEBUG] User 1 has access to project 4 (owner)
+[2026-01-05 19:53:48] [DEBUG] Found 2 matching teammates for project 4
+[2026-01-05 19:54:00] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:54:03] [DEBUG] User 1 has access to project 2 (owner)
+[2026-01-05 19:54:03] [DEBUG] Found 4 matching teammates for project 2
+[2026-01-05 19:54:11] [DEBUG] User 1 has access to project 2 (owner)

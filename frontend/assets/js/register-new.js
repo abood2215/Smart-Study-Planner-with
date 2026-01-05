@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Call the new PHP Backend API
-            const response = await fetch('http://localhost/Smart-Study-Planner-with/backend/api/auth.php?action=register', {
+            const response = await fetch('http://localhost/Smart-Study-Planner-with/backend/smart_study_planner2.php?action=register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,12 +73,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('current_user', JSON.stringify(data.data.user));
 
                 if (successMsg) {
-                    successMsg.textContent = '✅ Account created successfully! Redirecting to dashboard...';
+                    successMsg.textContent = '✅ Account created successfully! Redirecting...';
                     successMsg.classList.add('show');
                 }
 
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'gateway.html';
                 }, 1500);
             } else {
                 if (errorMsg) {

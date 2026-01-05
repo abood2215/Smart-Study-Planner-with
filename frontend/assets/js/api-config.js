@@ -61,3 +61,8 @@ const API_CONFIG = {
 
 // Make it globally available
 window.API_CONFIG = API_CONFIG;
+
+// Make API_BASE_URL available globally for backward compatibility
+// Extract base URL without /backend/api suffix
+const baseUrl = API_CONFIG.BASE_URL.replace('/backend/api', '').replace('/backend', '');
+window.API_BASE_URL = baseUrl;

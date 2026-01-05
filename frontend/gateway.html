@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Workspace - Smart Study Planner</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .gateway-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .gateway-content {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .gateway-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .gateway-header h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .gateway-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3rem;
+        }
+
+        .gateway-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .gateway-card {
+            background: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gateway-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .gateway-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .gateway-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .gateway-icon {
+            font-size: 5rem;
+            margin-bottom: 25px;
+            display: inline-block;
+            transition: transform 0.4s ease;
+        }
+
+        .gateway-card:hover .gateway-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .gateway-card h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .gateway-card p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .gateway-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .gateway-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .logout-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .logout-link a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .logout-link a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .features-list li {
+            color: #555;
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="gateway-container">
+        <div class="gateway-content">
+            <div class="gateway-header">
+                <h1>Welcome Back! 👋</h1>
+                <p>Choose your workspace to get started</p>
+            </div>
+
+            <div class="gateway-grid">
+                <!-- Study Planner Card -->
+                <div class="gateway-card" onclick="window.location.href='dashboard.html'">
+                    <div class="gateway-icon">📚</div>
+                    <h2>Study Planner</h2>
+                    <p>Organize your studies with AI-powered tools</p>
+                    <ul class="features-list">
+                        <li>Manage courses and tasks</li>
+                        <li>AI study recommendations</li>
+                        <li>Smart scheduling</li>
+                        <li>Progress tracking</li>
+                    </ul>
+                    <a href="dashboard.html" class="gateway-btn" onclick="event.stopPropagation()">
+                        Go to Study Planner
+                    </a>
+                </div>
+
+                <!-- Project Hub Card -->
+                <div class="gateway-card" onclick="window.location.href='projects.html'">
+                    <div class="gateway-icon">🚀</div>
+                    <h2>Project Hub</h2>
+                    <p>Discover ideas and build amazing projects</p>
+                    <ul class="features-list">
+                        <li>AI project idea generator</li>
+                        <li>Team matchmaking</li>
+                        <li>Collaborate with peers</li>
+                        <li>CV analysis & skills</li>
+                    </ul>
+                    <a href="projects.html" class="gateway-btn" onclick="event.stopPropagation()">
+                        Go to Project Hub
+                    </a>
+                </div>
+            </div>
+
+            <div class="logout-link">
+                <a href="#" onclick="logout(); return false;">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token') ||
+                         localStorage.getItem('auth_token') ||
+                         localStorage.getItem('currentUser');
+
+            if (!token) {
+                // Not logged in - redirect to login
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('current_user');
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

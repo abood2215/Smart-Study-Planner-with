@@ -3,7 +3,7 @@
 // Supports typical KEY=VALUE lines and PowerShell style: $env:VAR = 'value'
 // Loads variables from project root .env into getenv() and $_ENV if not already set
 
-$envFile = __DIR__ . '/../.env';
+$envFile = __DIR__ . '/../../.env';
 if (file_exists($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {

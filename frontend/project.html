@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details - Smart Study Planner</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/projects.css">
+    <style>
+        .project-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .section-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--gray-900);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--gray-600);
+        }
+
+        .spinner {
+            border: 3px solid var(--gray-200);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-content">
+                    <div class="feature-icon">🚀</div>
+                    <h2>Project Hub</h2>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="projects.html">Projects</a>
+                <a href="profile.html">Profile</a>
+                <a href="#" onclick="logout()" class="btn btn-outline">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="project-container">
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            <p>Loading project...</p>
+        </div>
+
+        <div id="projectContent" style="display: none;">
+            <!-- Project Header -->
+            <div class="project-header">
+                <h1 id="projectName"></h1>
+                <p id="projectDescription"></p>
+                <div class="project-meta">
+                    <div class="project-meta-item">
+                        <span>📊</span>
+                        <span>Status: <span id="projectStatus"></span></span>
+                    </div>
+                    <div class="project-meta-item">
+                        <span>👥</span>
+                        <span>Team: <span id="teamCount"></span>/<span id="maxTeamSize"></span></span>
+                    </div>
+                    <div class="project-meta-item">
+                        <span>🏷️</span>
+                        <span>Category: <span id="projectCategory"></span></span>
+                    </div>
+                    <div class="project-meta-item">
+                        <span>👤</span>
+                        <span>Owner: <span id="projectOwner"></span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Required Skills -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span>🛠️</span>
+                    <span>Required Skills</span>
+                </h2>
+                <p id="requiredSkills"></p>
+            </div>
+
+            <!-- Team Members -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span>👥</span>
+                    <span>Team Members</span>
+                </h2>
+                <div class="team-grid" id="teamGrid"></div>
+            </div>
+
+            <!-- Find Teammates (Owner Only) -->
+            <div class="section-card" id="findTeammatesSection" style="display: none;">
+                <h2 class="section-title">
+                    <span>🔍</span>
+                    <span>Add Team Members</span>
+                </h2>
+
+                <!-- Manual Add Section -->
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 15px; color: #333;">
+                        ➕ Add Member Manually
+                    </h3>
+                    <div style="display: flex; gap: 10px; align-items: flex-end;">
+                        <div style="flex: 1;">
+                            <label style="display: block; margin-bottom: 5px; color: #666; font-size: 0.9rem;">
+                                Search by Name or Email:
+                            </label>
+                            <input
+                                type="text"
+                                id="searchUserInput"
+                                placeholder="Enter name or email..."
+                                style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;"
+                                onkeypress="if(event.key==='Enter') searchUsers()"
+                            >
+                        </div>
+                        <button class="btn btn-primary" onclick="searchUsers()" style="height: 42px;">
+                            🔍 Search
+                        </button>
+                    </div>
+                    <div id="searchResults" style="margin-top: 15px;"></div>
+                </div>
+
+                <!-- AI-Powered Matching Section -->
+                <div style="background: linear-gradient(135deg, #f3e7ff 0%, #e7f3ff 100%); padding: 20px; border-radius: 8px;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 10px; color: #333;">
+                        🤖 AI-Powered Matching
+                    </h3>
+                    <p style="color: #666; margin-bottom: 15px;">Find the best teammates based on skills and interests</p>
+                    <button class="btn btn-primary" onclick="findTeammates()" id="findTeammatesBtn">
+                        ✨ Find Matching Teammates
+                    </button>
+                    <div class="teammates-grid" id="potentialTeammates" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="section-card" id="actionsSection">
+                <h2 class="section-title">
+                    <span>⚙️</span>
+                    <span>Actions</span>
+                </h2>
+                <div class="action-buttons" id="actionButtons"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/api-config.js?v=2.0"></script>
+    <script src="assets/js/project.js?v=2.0"></script>
+    <script>
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication (support multiple token types)
+            const token = localStorage.getItem('token') ||
+                         localStorage.getItem('auth_token') ||
+                         localStorage.getItem('currentUser');
+
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const projectId = urlParams.get('id');
+
+            if (!projectId) {
+                alert('Project ID is required');
+                window.location.href = 'projects.html';
+                return;
+            }
+
+            loadProject(projectId);
+        });
+    </script>
+</body>
+</html>

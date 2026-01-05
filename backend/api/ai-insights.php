@@ -88,14 +88,14 @@ try {
     }
 
     // Choose AI provider based on available keys
-    $openaiKey = getenv('OPENAI_API_KEY');
+    $openaiKey = OPENAI_API_KEY;
     $geminiKey = getenv('GEMINI_API_KEY');
 
-    if ($openaiKey && $openaiKey !== 'your-openai-api-key-here' && strpos($openaiKey, 'sk-') === 0) {
+    if ($openaiKey && $openaiKey !== 'your-openai-api-key-here' && $openaiKey !== 'YOUR_OPENAI_API_KEY_HERE' && strpos($openaiKey, 'sk-') === 0) {
         // Use OpenAI Service for better handling
         $aiService = new OpenAIService();
         $insights = getOpenAIInsights($context, $action, $aiService);
-    } elseif ($geminiKey && $geminiKey !== 'your-gemini-api-key-here') {
+    } elseif ($geminiKey && $geminiKey !== 'your-gemini-api-key-here' && $geminiKey !== 'YOUR_API_KEY_HERE' && $geminiKey !== 'your-gemini-api-key-here') {
         $insights = getGeminiInsights($context, $action);
     } else {
         // Fallback: Generate basic insights without AI

@@ -3,18 +3,31 @@ require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/GeminiService.php';
+require_once __DIR__ . '/../includes/OpenAIService.php';
 require_once __DIR__ . '/../models/Task.php';
 require_once __DIR__ . '/../models/Course.php';
 require_once __DIR__ . '/../models/User.php';
 
 class AIController {
     private $gemini;
+    private $openai;
+    private $activeService;
     private $taskModel;
     private $courseModel;
     private $userModel;
 
     public function __construct() {
         $this->gemini = new GeminiService();
+        $this->openai = new OpenAIService();
+        
+        // Prefer OpenAI if key is set and valid (from config.php defined constants)
+        $openaiKey = OPENAI_API_KEY;
+        if ($openaiKey && $openaiKey !== 'your-openai-api-key-here' && $openaiKey !== 'YOUR_OPENAI_API_KEY_HERE' && strpos($openaiKey, 'sk-') === 0) {
+            $this->activeService = $this->openai;
+        } else {
+            $this->activeService = $this->gemini;
+        }
+        
         $this->taskModel = new Task();
         $this->courseModel = new Course();
         $this->userModel = new User();
@@ -31,7 +44,7 @@ class AIController {
             sendError('Task title is required', 400);
         }
 
-        $result = $this->gemini->estimateTaskDuration(
+        $result = $this->activeService->estimateTaskDuration(
             $data['title'],
             $data['description'] ?? '',
             $data['difficulty'] ?? 'medium'
@@ -64,7 +77,7 @@ class AIController {
             ], 'No data available');
         }
 
-        $result = $this->gemini->getStudyRecommendations($tasks, $courses, $preferences);
+        $result = $this->activeService->getStudyRecommendations($tasks, $courses, $preferences);
 
         if (!$result['success']) {
             sendError('Failed to get recommendations: ' . $result['error'], 500);
@@ -90,7 +103,7 @@ class AIController {
             'courses' => $courseStats
         ];
 
-        $result = $this->gemini->analyzeProgress($user_id, $statistics);
+        $result = $this->activeService->analyzeProgress($user_id, $statistics);
 
         if (!$result['success']) {
             sendError('Failed to analyze progress: ' . $result['error'], 500);
@@ -121,7 +134,7 @@ class AIController {
         $dailyHours = $preferences['daily_study_hours'] ?? 4;
         $preferredTime = $preferences['preferred_study_time'] ?? 'morning';
 
-        $result = $this->gemini->suggestStudySchedule($tasks, $dailyHours, $preferredTime);
+        $result = $this->activeService->suggestStudySchedule($tasks, $dailyHours, $preferredTime);
 
         if (!$result['success']) {
             sendError('Failed to generate schedule: ' . $result['error'], 500);
@@ -144,7 +157,7 @@ class AIController {
             sendError('Course not found', 404);
         }
 
-        $result = $this->gemini->getCourseTips(
+        $result = $this->activeService->getCourseTips(
             $course['name'],
             $course['difficulty'],
             $course['performance']
@@ -172,7 +185,7 @@ class AIController {
             sendError('Task not found', 404);
         }
 
-        $result = $this->gemini->breakdownTask(
+        $result = $this->activeService->breakdownTask(
             $task['title'],
             $task['description'] ?? '',
             $task['estimated_hours']
@@ -196,7 +209,7 @@ class AIController {
 
         $stats = $this->taskModel->getStatistics($user_id);
 
-        $result = $this->gemini->getMotivationalMessage(
+        $result = $this->activeService->getMotivationalMessage(
             $stats['completed_tasks'],
             $stats['total_tasks'],
             $stats['avg_progress']
@@ -227,7 +240,7 @@ class AIController {
 
         $learningGoal = $data['learning_goal'] ?? 'فهم المادة وتحقيق أداء ممتاز';
 
-        $result = $this->gemini->suggestStudyTechnique(
+        $result = $this->activeService->suggestStudyTechnique(
             $course['name'],
             $course['difficulty'],
             $learningGoal
@@ -258,7 +271,7 @@ class AIController {
 
         // Use AI to estimate duration if not provided
         if (!isset($data['estimated_hours'])) {
-            $estimateResult = $this->gemini->estimateTaskDuration(
+            $estimateResult = $this->activeService->estimateTaskDuration(
                 $data['title'],
                 $data['description'] ?? '',
                 $data['difficulty'] ?? 'medium'
@@ -285,5 +298,88 @@ class AIController {
             'estimated_hours' => $data['estimated_hours'],
             'ai_assisted' => !isset($data['estimated_hours'])
         ], 'Smart task created successfully', 201);
+    }
+
+    /**
+     * Generate project ideas based on interests
+     */
+    public function generateProjects() {
+        $user_id = requireAuth();
+        $data = getJsonInput();
+
+        // Validate required fields
+        if (!isset($data['interests']) || empty($data['interests'])) {
+            sendError('Interests are required', 400);
+        }
+
+        $interests = $data['interests'];
+        $difficulty = $data['difficulty'] ?? 'medium';
+        $count = $data['count'] ?? 5;
+
+        $result = $this->activeService->generateProjectIdeas($interests, $difficulty, $count);
+
+        if (!$result['success']) {
+            sendError('Failed to generate project ideas: ' . $result['error'], 500);
+        }
+
+        sendSuccess([
+            'projects' => $result['projects'],
+            'raw_response' => $result['raw_response'] ?? ''
+        ], 'Project ideas generated successfully');
+    }
+
+    /**
+     * Analyze CV and extract skills
+     */
+    public function analyzeCV() {
+        $user_id = requireAuth();
+        $data = getJsonInput();
+
+        // Validate required fields
+        if (!isset($data['cv_text']) || empty($data['cv_text'])) {
+            sendError('CV text is required', 400);
+        }
+
+        $cvText = $data['cv_text'];
+
+        $result = $this->activeService->analyzeCVText($cvText);
+
+        if (!$result['success']) {
+            sendError('Failed to analyze CV: ' . $result['error'], 500);
+        }
+
+        // Update user profile with extracted data
+        $db = getDB();
+        $updateData = [];
+
+        if (!empty($result['skills'])) {
+            $updateData['skills'] = is_array($result['skills']) ? implode(', ', $result['skills']) : $result['skills'];
+        }
+
+        if (!empty($result['interests'])) {
+            $updateData['interests'] = is_array($result['interests']) ? implode(', ', $result['interests']) : $result['interests'];
+        }
+
+        if (!empty($updateData)) {
+            $fields = [];
+            $params = ['user_id' => $user_id];
+
+            foreach ($updateData as $field => $value) {
+                $fields[] = "$field = :$field";
+                $params[$field] = $value;
+            }
+
+            $sql = "UPDATE users SET " . implode(', ', $fields) . " WHERE id = :user_id";
+            $stmt = $db->prepare($sql);
+            $stmt->execute($params);
+        }
+
+        sendSuccess([
+            'skills' => $result['skills'],
+            'interests' => $result['interests'],
+            'experience_level' => $result['experience_level'] ?? 'intermediate',
+            'summary' => $result['summary'] ?? '',
+            'profile_updated' => !empty($updateData)
+        ], 'CV analyzed successfully');
     }
 }

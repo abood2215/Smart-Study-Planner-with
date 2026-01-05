@@ -62,7 +62,7 @@ class User {
      * Find user by ID
      */
     public function findById($id) {
-        $stmt = $this->db->prepare("SELECT id, name, email, created_at FROM users WHERE id = :id");
+        $stmt = $this->db->prepare("SELECT id, name, email, interests, skills, created_at FROM users WHERE id = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch();
     }
@@ -120,6 +120,16 @@ class User {
             if (isset($data['password'])) {
                 $fields[] = 'password = :password';
                 $params['password'] = hashPassword($data['password']);
+            }
+
+            if (isset($data['interests'])) {
+                $fields[] = 'interests = :interests';
+                $params['interests'] = sanitize($data['interests']);
+            }
+
+            if (isset($data['skills'])) {
+                $fields[] = 'skills = :skills';
+                $params['skills'] = sanitize($data['skills']);
             }
 
             if (empty($fields)) {

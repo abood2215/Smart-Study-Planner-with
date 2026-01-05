@@ -78,7 +78,7 @@ function handleRegister(e) {
         setTimeout(() => {
             addSampleData(result.user.id);
             localStorage.setItem('currentUser', email);
-            window.location.href = 'dashboard.html';
+            window.location.href = 'gateway.html';
         }, 1500);
     } else {
         showError(errorMsg, result.message);
@@ -102,7 +102,7 @@ function handleLogin(e) {
     const result = storage.loginUser(email, password);
 
     if (result.success) {
-        window.location.href = 'dashboard.html';
+        window.location.href = 'gateway.html';
     } else {
         showError(errorMsg, result.message);
     }

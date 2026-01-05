@@ -23,13 +23,20 @@ define('SESSION_LIFETIME', 3600 * 24); // 24 hours
 define('API_VERSION', 'v1');
 define('JSON_OPTIONS', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
+// AI API Configuration
+// Choose which AI service to use: 'gemini' or 'chatgpt'
+define('AI_SERVICE', getenv('AI_SERVICE') !== false ? getenv('AI_SERVICE') : 'chatgpt');
+
 // Gemini AI API
-// Prefer reading the key from an environment variable for safety. If not set,
-// keep a placeholder so the checker page prompts the developer to add a valid key.
 // Get API keys at: https://makersuite.google.com/app/apikey
-define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') !== false ? getenv('GEMINI_API_KEY') : 'YOUR_API_KEY_HERE');
-// Use the stable v1 endpoint by default; change if you need a different model.
+define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') !== false ? getenv('GEMINI_API_KEY') : 'YOUR_GEMINI_API_KEY_HERE');
 define('GEMINI_API_URL', getenv('GEMINI_API_URL') !== false ? getenv('GEMINI_API_URL') : 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-pro:generateContent');
+
+// ChatGPT (OpenAI) API
+// Get API keys at: https://platform.openai.com/api-keys
+define('CHATGPT_API_KEY', getenv('CHATGPT_API_KEY') !== false ? getenv('CHATGPT_API_KEY') : 'YOUR_CHATGPT_API_KEY_HERE');
+define('CHATGPT_API_URL', getenv('CHATGPT_API_URL') !== false ? getenv('CHATGPT_API_URL') : 'https://api.openai.com/v1/chat/completions');
+define('CHATGPT_MODEL', getenv('CHATGPT_MODEL') !== false ? getenv('CHATGPT_MODEL') : 'gpt-4o-mini');
 
 // Timezone
 date_default_timezone_set('Asia/Amman');

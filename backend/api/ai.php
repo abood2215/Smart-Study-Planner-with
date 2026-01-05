@@ -1,10 +1,26 @@
 <?php
+/**
+ * AI API Endpoint
+ *
+ * This file serves as the routing layer for all AI-related API requests.
+ * It handles various AI features including task duration estimation, study recommendations,
+ * progress analysis, schedule generation, and more.
+ *
+ * @package Smart Study Planner
+ * @category API
+ * @author Smart Study Planner Team
+ * @version 1.0
+ */
+
 require_once __DIR__ . '/../controllers/AIController.php';
 
+// Initialize the AI controller
 $controller = new AIController();
+
+// Get the HTTP request method (GET, POST, etc.)
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Get action from query string
+// Get action and ID parameters from query string
 $action = $_GET['action'] ?? null;
 $id = $_GET['id'] ?? null;
 
@@ -86,6 +102,26 @@ try {
         case 'create-smart-task':
             if ($method === 'POST') {
                 $controller->createSmartTask();
+            } else {
+                sendError('Method not allowed', 405);
+            }
+            break;
+
+        // Generate project ideas based on interests
+        case 'generate-projects':
+        case 'generateProjects':
+            if ($method === 'POST') {
+                $controller->generateProjects();
+            } else {
+                sendError('Method not allowed', 405);
+            }
+            break;
+
+        // Analyze CV and extract skills
+        case 'analyze-cv':
+        case 'analyzeCV':
+            if ($method === 'POST') {
+                $controller->analyzeCV();
             } else {
                 sendError('Method not allowed', 405);
             }

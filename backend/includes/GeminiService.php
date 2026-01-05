@@ -361,4 +361,207 @@ $tasksJson
             'technique' => $result['text']
         ];
     }
+
+    /**
+     * Generate project ideas based on user interests
+     */
+    public function generateProjectIdeas($interests, $difficulty = 'medium', $count = 5) {
+        $prompt = "أنت خبير في توليد أفكار المشاريع البرمجية والتقنية.
+
+المستخدم لديه الاهتمامات التالية:
+$interests
+
+مستوى الصعوبة المطلوب: $difficulty
+عدد الأفكار المطلوبة: $count
+
+يرجى إنشاء $count أفكار مشاريع مبتكرة وقابلة للتنفيذ مناسبة لهذه الاهتمامات.
+
+لكل مشروع، قدم:
+1. عنوان المشروع
+2. وصف مختصر (2-3 جمل)
+3. التقنيات المطلوبة
+4. مستوى الصعوبة (easy/medium/hard)
+5. الوقت المتوقع للإنجاز
+
+اكتب الإجابة بالعربية بتنسيق واضح.";
+
+        $result = $this->makeRequest($prompt);
+
+        if (!$result['success']) {
+            return ['success' => false, 'error' => $result['error']];
+        }
+
+        // Try to parse the response into structured data
+        $rawResponse = $result['text'];
+        $projects = [];
+
+        // Try multiple parsing strategies
+
+        // Strategy 1: Split by numbered patterns (1., 2., 3., etc.)
+        $lines = explode("\n", $rawResponse);
+        $currentProject = null;
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) continue;
+
+            // Check if line starts a new project (numbered)
+            // Match various formats: "1.", "1)", "1:", "المشروع 1:", "Project 1:", "### 1.", etc.
+            if (preg_match('/^(#{1,3}\s*)?(المشروع\s+|مشروع\s+|Project\s+)?(\d+)[.\):]/', $line)) {
+                if ($currentProject) {
+                    $projects[] = $currentProject;
+                }
+                $currentProject = ['raw' => $line];
+            } elseif ($currentProject) {
+                $currentProject['raw'] .= "\n" . $line;
+            }
+        }
+
+        // Add the last project
+        if ($currentProject) {
+            $projects[] = $currentProject;
+        }
+
+        // Strategy 2: If no projects found, try splitting by "---" or "###"
+        if (empty($projects)) {
+            $sections = preg_split('/\n(---+|\#{3,})\n/', $rawResponse);
+            foreach ($sections as $section) {
+                $section = trim($section);
+                if (!empty($section) && strlen($section) > 50) {
+                    $projects[] = ['raw' => $section];
+                }
+            }
+        }
+
+        // Strategy 3: If still no projects, try splitting by double newlines
+        if (empty($projects)) {
+            $sections = preg_split('/\n\n+/', $rawResponse);
+            $tempProjects = [];
+            foreach ($sections as $section) {
+                $section = trim($section);
+                // Only include sections that look like project descriptions
+                if (!empty($section) &&
+                    strlen($section) > 100 &&
+                    (stripos($section, 'project') !== false ||
+                     stripos($section, 'مشروع') !== false ||
+                     preg_match('/\d+[.\)]/', $section))) {
+                    $tempProjects[] = ['raw' => $section];
+                }
+            }
+
+            // Only use this strategy if we found at least 2 projects
+            if (count($tempProjects) >= 2) {
+                $projects = $tempProjects;
+            }
+        }
+
+        return [
+            'success' => true,
+            'projects' => $projects,
+            'raw_response' => $rawResponse
+        ];
+    }
+
+    /**
+     * Analyze CV text and extract skills and interests
+     */
+    public function analyzeCVText($cvText) {
+        $prompt = "أنت خبير في تحليل السير الذاتية واستخراج المهارات والخبرات.
+
+يرجى تحليل السيرة الذاتية التالية:
+
+$cvText
+
+قم باستخراج:
+1. المهارات التقنية (Technical Skills) - قائمة بالمهارات البرمجية واللغات والأدوات
+2. مجالات الاهتمام (Interests/Domains) - مثل: تطوير الويب، الذكاء الاصطناعي، تطبيقات الموبايل، إلخ
+3. مستوى الخبرة (beginner/intermediate/advanced)
+4. ملخص قصير عن الشخص
+
+قدم الإجابة بتنسيق واضح ومنظم:
+
+المهارات:
+- [قائمة المهارات]
+
+مجالات الاهتمام:
+- [قائمة المجالات]
+
+مستوى الخبرة:
+[المستوى]
+
+الملخص:
+[ملخص مختصر]";
+
+        $result = $this->makeRequest($prompt);
+
+        if (!$result['success']) {
+            return ['success' => false, 'error' => $result['error']];
+        }
+
+        $rawResponse = $result['text'];
+
+        // Parse the response to extract structured data
+        $skills = [];
+        $interests = [];
+        $experienceLevel = 'intermediate';
+        $summary = '';
+
+        $lines = explode("\n", $rawResponse);
+        $currentSection = null;
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) continue;
+
+            // Detect sections
+            if (stripos($line, 'المهارات') !== false || stripos($line, 'skills') !== false) {
+                $currentSection = 'skills';
+                continue;
+            }
+            if (stripos($line, 'مجالات الاهتمام') !== false || stripos($line, 'interests') !== false) {
+                $currentSection = 'interests';
+                continue;
+            }
+            if (stripos($line, 'مستوى الخبرة') !== false || stripos($line, 'experience') !== false) {
+                $currentSection = 'experience';
+                continue;
+            }
+            if (stripos($line, 'الملخص') !== false || stripos($line, 'summary') !== false) {
+                $currentSection = 'summary';
+                continue;
+            }
+
+            // Extract data based on current section
+            if ($currentSection === 'skills' && (strpos($line, '-') === 0 || strpos($line, '•') === 0)) {
+                $skill = trim(substr($line, 1));
+                if (!empty($skill)) {
+                    $skills[] = $skill;
+                }
+            } elseif ($currentSection === 'interests' && (strpos($line, '-') === 0 || strpos($line, '•') === 0)) {
+                $interest = trim(substr($line, 1));
+                if (!empty($interest)) {
+                    $interests[] = $interest;
+                }
+            } elseif ($currentSection === 'experience') {
+                if (stripos($line, 'beginner') !== false || stripos($line, 'مبتدئ') !== false) {
+                    $experienceLevel = 'beginner';
+                } elseif (stripos($line, 'advanced') !== false || stripos($line, 'متقدم') !== false) {
+                    $experienceLevel = 'advanced';
+                } else {
+                    $experienceLevel = 'intermediate';
+                }
+            } elseif ($currentSection === 'summary') {
+                $summary .= $line . ' ';
+            }
+        }
+
+        return [
+            'success' => true,
+            'skills' => $skills,
+            'interests' => $interests,
+            'experience_level' => $experienceLevel,
+            'summary' => trim($summary),
+            'raw_response' => $rawResponse
+        ];
+    }
 }

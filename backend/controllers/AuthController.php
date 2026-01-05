@@ -152,4 +152,47 @@ class AuthController {
 
         sendSuccess($preferences, 'Preferences retrieved successfully');
     }
+
+    /**
+     * Search for users by name or email
+     */
+    public function searchUsers() {
+        $user_id = requireAuth();
+
+        $searchTerm = $_GET['q'] ?? '';
+
+        if (strlen($searchTerm) < 2) {
+            sendError('Search term must be at least 2 characters', 400);
+        }
+
+        try {
+            $db = getDB();
+
+            $stmt = $db->prepare("
+                SELECT id, name, email, skills, interests
+                FROM users
+                WHERE (name LIKE :search_name OR email LIKE :search_email)
+                AND id != :user_id
+                ORDER BY name ASC
+                LIMIT 20
+            ");
+
+            $searchParam = '%' . $searchTerm . '%';
+            $stmt->execute([
+                'search_name' => $searchParam,
+                'search_email' => $searchParam,
+                'user_id' => $user_id
+            ]);
+
+            $users = $stmt->fetchAll();
+
+            logMessage("Search users: found " . count($users) . " users for term: $searchTerm", 'DEBUG');
+
+            sendSuccess($users, 'Users found successfully');
+
+        } catch (PDOException $e) {
+            logMessage("Error searching users: " . $e->getMessage(), 'ERROR');
+            sendError('Failed to search users', 500);
+        }
+    }
 }

@@ -40,11 +40,27 @@ try {
             }
             break;
 
+        case 'update-profile':
+            if ($method === 'POST' || $method === 'PUT' || $method === 'PATCH') {
+                $controller->updateProfile();
+            } else {
+                sendError('Method not allowed', 405);
+            }
+            break;
+
         case 'preferences':
             if ($method === 'GET') {
                 $controller->getPreferences();
             } elseif ($method === 'PUT' || $method === 'PATCH') {
                 $controller->updatePreferences();
+            } else {
+                sendError('Method not allowed', 405);
+            }
+            break;
+
+        case 'search-users':
+            if ($method === 'GET') {
+                $controller->searchUsers();
             } else {
                 sendError('Method not allowed', 405);
             }

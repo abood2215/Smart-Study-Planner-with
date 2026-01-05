@@ -52,12 +52,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('current_user', JSON.stringify(data.data.user));
 
                 if (successMsg) {
-                    successMsg.textContent = '✅ Login successful! Redirecting to dashboard...';
+                    successMsg.textContent = '✅ Login successful! Redirecting...';
                     successMsg.classList.add('show');
                 }
 
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'gateway.html';
                 }, 1000);
             } else {
                 if (errorMsg) {
@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         } catch (error) {
+            console.error('Login error:', error);
             if (errorMsg) {
                 errorMsg.textContent = '❌ An error occurred. Please make sure XAMPP is running.';
                 errorMsg.classList.add('show');

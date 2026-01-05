@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         localStorage.setItem('users', JSON.stringify(users));
                     }
                 } catch (e) {}
-                window.location.href = window.APP_BASE + '/dashboard.html';
+                window.location.href = window.APP_BASE + '/gateway.html';
             } else {
                 errorMsg.textContent = '❌ ' + (data.message || 'Login failed. Please try again.');
                 errorMsg.classList.add('show');
