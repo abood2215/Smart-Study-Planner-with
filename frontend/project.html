@@ -55,6 +55,63 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .comment {
+            background: var(--gray-50);
+            border-left: 3px solid var(--primary);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: var(--radius);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .comment-date {
+            color: var(--gray-500);
+            font-size: 0.85rem;
+        }
+
+        .comment-text {
+            color: var(--gray-700);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .comment-reply {
+            margin-left: 30px;
+            margin-top: 10px;
+            border-left: 3px solid var(--gray-300);
+        }
+
+        .reply-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0;
+            text-decoration: underline;
+        }
+
+        .reply-btn:hover {
+            color: var(--primary-light);
+        }
+
+        .no-comments {
+            text-align: center;
+            color: var(--gray-400);
+            padding: 40px;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +127,7 @@
                 <a href="index.html">Home</a>
                 <a href="projects.html">Projects</a>
                 <a href="profile.html">Profile</a>
+                <span id="userName" style="color: var(--gray-700); font-weight: 500; margin-right: 10px;">Loading...</span>
                 <a href="#" onclick="logout()" class="btn btn-outline">Logout</a>
             </div>
         </div>
@@ -106,6 +164,36 @@
                 </div>
             </div>
 
+            <!-- Project Plan & Instructions -->
+            <div class="section-card" id="projectPlanSection" style="display: none;">
+                <h2 class="section-title">
+                    <span>📋</span>
+                    <span>Project Plan & Instructions</span>
+                </h2>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary);">
+                    <pre id="projectPlan" style="white-space: pre-wrap; color: var(--gray-800); line-height: 1.8; font-family: inherit; margin: 0;"></pre>
+                </div>
+            </div>
+
+            <!-- Project Status (Owner Only) -->
+            <div class="section-card" id="statusSection" style="display: none;">
+                <h2 class="section-title">
+                    <span>📊</span>
+                    <span>Project Status</span>
+                </h2>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <label style="font-weight: 600; color: var(--gray-700);">Change Status:</label>
+                    <select id="statusDropdown" style="padding: 10px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 1rem; min-width: 200px;">
+                        <option value="draft">Draft</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="canceled">Canceled</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="updateProjectStatus()">Update Status</button>
+                </div>
+            </div>
+
             <!-- Required Skills -->
             <div class="section-card">
                 <h2 class="section-title">
@@ -124,6 +212,30 @@
                 <div class="team-grid" id="teamGrid"></div>
             </div>
 
+            <!-- Comments Section (All Members) -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span>💬</span>
+                    <span>Comments</span>
+                </h2>
+                <div id="commentsContainer">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading comments...</p>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <textarea
+                        id="newComment"
+                        placeholder="Add a comment..."
+                        style="width: 100%; min-height: 100px; padding: 12px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 1rem; font-family: inherit; resize: vertical;"
+                    ></textarea>
+                    <button class="btn btn-primary" onclick="addComment()" style="margin-top: 10px;">
+                        💬 Add Comment
+                    </button>
+                </div>
+            </div>
+
             <!-- Find Teammates (Owner Only) -->
             <div class="section-card" id="findTeammatesSection" style="display: none;">
                 <h2 class="section-title">
@@ -139,7 +251,7 @@
                     <div style="display: flex; gap: 10px; align-items: flex-end;">
                         <div style="flex: 1;">
                             <label style="display: block; margin-bottom: 5px; color: #666; font-size: 0.9rem;">
-                                Search by Name or Email:
+                                Search by Name or Email The Member Should Be Registered First:
                             </label>
                             <input
                                 type="text"
@@ -212,7 +324,35 @@
             }
 
             loadProject(projectId);
+            loadUserName();
         });
+
+        // Load and display user name
+        async function loadUserName() {
+            try {
+                const token = localStorage.getItem('token') ||
+                             localStorage.getItem('auth_token') ||
+                             localStorage.getItem('currentUser');
+
+                const response = await fetch(`${API_BASE_URL}/backend/api/auth.php?action=profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const user = result.data.user || result.data;
+                    document.getElementById('userName').textContent = user.name || 'User';
+                } else {
+                    document.getElementById('userName').textContent = '';
+                }
+            } catch (error) {
+                console.error('Error loading user name:', error);
+                document.getElementById('userName').textContent = '';
+            }
+        }
     </script>
 </body>
 </html>

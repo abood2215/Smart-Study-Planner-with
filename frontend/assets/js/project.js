@@ -54,13 +54,19 @@ async function loadProject(projectId) {
 
             displayProject(currentProject);
             loadTeamMembers(projectId);
+            loadComments(projectId);
 
-            // Show find teammates section only for owner
+            // Show owner-only sections
             if (isOwner) {
-                console.log('Showing Add Team Members section');
+                console.log('Showing owner-only sections');
                 document.getElementById('findTeammatesSection').style.display = 'block';
+                document.getElementById('statusSection').style.display = 'block';
+                document.getElementById('actionsSection').style.display = 'block';
             } else {
-                console.log('Hiding Add Team Members section - user is not owner');
+                console.log('Hiding owner-only sections - user is not owner');
+                document.getElementById('findTeammatesSection').style.display = 'none';
+                document.getElementById('statusSection').style.display = 'none';
+                document.getElementById('actionsSection').style.display = 'none';
             }
 
             setupActionButtons();
@@ -93,6 +99,23 @@ function displayProject(project) {
     document.getElementById('projectOwner').textContent = project.owner_name || 'Unknown';
     document.getElementById('requiredSkills').textContent = project.required_skills || 'No specific skills required';
     document.getElementById('maxTeamSize').textContent = project.max_team_size || 5;
+
+    // Display project plan if available
+    const projectPlanSection = document.getElementById('projectPlanSection');
+    const projectPlanElement = document.getElementById('projectPlan');
+
+    if (project.plan && project.plan.trim()) {
+        projectPlanElement.textContent = project.plan;
+        projectPlanSection.style.display = 'block';
+    } else {
+        projectPlanSection.style.display = 'none';
+    }
+
+    // Set status dropdown value if owner
+    const statusDropdown = document.getElementById('statusDropdown');
+    if (statusDropdown) {
+        statusDropdown.value = project.status;
+    }
 }
 
 /**
@@ -481,5 +504,209 @@ async function leaveProject() {
     } catch (error) {
         console.error('Error leaving project:', error);
         alert('Failed to leave project');
+    }
+}
+
+/**
+ * Load comments for the project
+ */
+async function loadComments(projectId) {
+    const container = document.getElementById('commentsContainer');
+    container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading comments...</p></div>';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/backend/api/projects.php?action=comments&id=${projectId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('auth_token') || localStorage.getItem('currentUser')}`
+            }
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            displayComments(result.data);
+        } else {
+            container.innerHTML = `<p style="color: #dc3545;">Error loading comments: ${result.message}</p>`;
+        }
+    } catch (error) {
+        console.error('Error loading comments:', error);
+        container.innerHTML = '<p style="color: #dc3545;">Failed to load comments</p>';
+    }
+}
+
+/**
+ * Display comments
+ */
+function displayComments(comments) {
+    const container = document.getElementById('commentsContainer');
+
+    if (!comments || comments.length === 0) {
+        container.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+        return;
+    }
+
+    // Organize comments by parent
+    const topLevelComments = comments.filter(c => !c.parent_id);
+    const replies = comments.filter(c => c.parent_id);
+
+    let html = '';
+    topLevelComments.forEach(comment => {
+        html += renderComment(comment, replies);
+    });
+
+    container.innerHTML = html;
+}
+
+/**
+ * Render a single comment with its replies
+ */
+function renderComment(comment, allReplies) {
+    const replies = allReplies.filter(r => r.parent_id == comment.id);
+    const date = new Date(comment.created_at).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    let html = `
+        <div class="comment">
+            <div class="comment-header">
+                <span class="comment-author">${comment.user_name || 'Unknown User'}</span>
+                <span class="comment-date">${date}</span>
+            </div>
+            <div class="comment-text">${comment.comment}</div>
+            <button class="reply-btn" onclick="replyToComment(${comment.id}, '${comment.user_name}')">Reply</button>
+    `;
+
+    // Render replies
+    if (replies.length > 0) {
+        replies.forEach(reply => {
+            const replyDate = new Date(reply.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            html += `
+                <div class="comment-reply">
+                    <div class="comment-header">
+                        <span class="comment-author">${reply.user_name || 'Unknown User'}</span>
+                        <span class="comment-date">${replyDate}</span>
+                    </div>
+                    <div class="comment-text">${reply.comment}</div>
+                </div>
+            `;
+        });
+    }
+
+    html += '</div>';
+    return html;
+}
+
+/**
+ * Add a comment
+ */
+async function addComment(parentId = null) {
+    const textarea = document.getElementById('newComment');
+    const commentText = textarea.value.trim();
+
+    if (!commentText) {
+        alert('Please enter a comment');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/backend/api/projects.php?action=add-comment&id=${currentProject.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('auth_token') || localStorage.getItem('currentUser')}`
+            },
+            body: JSON.stringify({
+                comment: commentText,
+                parent_id: parentId
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            textarea.value = '';
+            loadComments(currentProject.id);
+            alert('Comment added successfully!');
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error adding comment:', error);
+        alert('Failed to add comment');
+    }
+}
+
+/**
+ * Reply to a comment
+ */
+function replyToComment(parentId, parentAuthor) {
+    const textarea = document.getElementById('newComment');
+    textarea.value = `@${parentAuthor} `;
+    textarea.focus();
+
+    // Store parent ID temporarily for the reply
+    textarea.dataset.parentId = parentId;
+
+    // Update the add comment button to handle reply
+    const oldButton = document.querySelector('button[onclick="addComment()"]');
+    if (oldButton) {
+        oldButton.onclick = function() {
+            addComment(parentId);
+            delete textarea.dataset.parentId;
+            oldButton.onclick = function() { addComment(); };
+        };
+    }
+}
+
+/**
+ * Update project status from dropdown
+ */
+async function updateProjectStatus() {
+    const dropdown = document.getElementById('statusDropdown');
+    const newStatus = dropdown.value;
+
+    if (!newStatus) {
+        alert('Please select a status');
+        return;
+    }
+
+    if (!confirm(`Are you sure you want to change the status to "${newStatus}"?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/backend/api/projects.php?action=update-status&id=${currentProject.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('auth_token') || localStorage.getItem('currentUser')}`
+            },
+            body: JSON.stringify({
+                status: newStatus
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            currentProject.status = newStatus;
+            document.getElementById('projectStatus').textContent = newStatus;
+            alert('Status updated successfully!');
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error updating status:', error);
+        alert('Failed to update status');
     }
 }

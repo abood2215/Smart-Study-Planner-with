@@ -79,7 +79,8 @@ class GeminiService {
         ]);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // For localhost testing
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30); // 30 second timeout
+        curl_setopt($ch, CURLOPT_TIMEOUT, 120); // 120 second timeout for comprehensive AI responses
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30); // 30 second connection timeout
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -366,24 +367,57 @@ $tasksJson
      * Generate project ideas based on user interests
      */
     public function generateProjectIdeas($interests, $difficulty = 'medium', $count = 5) {
-        $prompt = "أنت خبير في توليد أفكار المشاريع البرمجية والتقنية.
+        $prompt = "You are an expert in generating innovative software and technology project ideas.
 
-المستخدم لديه الاهتمامات التالية:
+The user has the following interests:
 $interests
 
-مستوى الصعوبة المطلوب: $difficulty
-عدد الأفكار المطلوبة: $count
+Difficulty level: $difficulty
+Number of ideas: $count
 
-يرجى إنشاء $count أفكار مشاريع مبتكرة وقابلة للتنفيذ مناسبة لهذه الاهتمامات.
+Please create $count innovative and feasible project ideas suitable for these interests.
 
-لكل مشروع، قدم:
-1. عنوان المشروع
-2. وصف مختصر (2-3 جمل)
-3. التقنيات المطلوبة
-4. مستوى الصعوبة (easy/medium/hard)
-5. الوقت المتوقع للإنجاز
+For EACH project, provide a COMPREHENSIVE PROPOSAL in the following format:
 
-اكتب الإجابة بالعربية بتنسيق واضح.";
+PROJECT [Number]: [Project Title]
+
+DESCRIPTION:
+[2-3 sentences describing what the project is and its purpose]
+
+REQUIRED TECHNOLOGIES:
+[List the technologies, frameworks, and tools needed]
+
+DIFFICULTY LEVEL:
+[easy/medium/hard]
+
+ESTIMATED TIME:
+[Time to complete the project]
+
+PROJECT PLAN:
+Phase 1: Planning & Setup
+- [Specific tasks for setup and planning]
+
+Phase 2: Core Development
+- [Specific development tasks]
+
+Phase 3: Features & Integration
+- [Feature implementation tasks]
+
+Phase 4: Testing & Deployment
+- [Testing and deployment tasks]
+
+STEP-BY-STEP INSTRUCTIONS:
+Step 1: [Detailed instruction]
+Step 2: [Detailed instruction]
+Step 3: [Detailed instruction]
+[Continue with detailed steps...]
+
+LEARNING OUTCOMES:
+- [What the user will learn from this project]
+
+---
+
+Format each project clearly and separate them with '---'. Write in English with clear formatting.";
 
         $result = $this->makeRequest($prompt);
 
@@ -562,6 +596,49 @@ $cvText
             'experience_level' => $experienceLevel,
             'summary' => trim($summary),
             'raw_response' => $rawResponse
+        ];
+    }
+
+    /**
+     * Generate a CV based on skills and interests
+     */
+    public function generateCV($skills, $interests, $userName = '', $userEmail = '') {
+        $skillsList = is_array($skills) ? implode(', ', $skills) : $skills;
+        $interestsList = is_array($interests) ? implode(', ', $interests) : $interests;
+
+        $nameSection = !empty($userName) ? "الاسم: $userName\n" : "";
+        $emailSection = !empty($userEmail) ? "البريد الإلكتروني: $userEmail\n" : "";
+
+        $prompt = "أنت خبير في كتابة السير الذاتية الاحترافية.
+
+يرجى إنشاء سيرة ذاتية احترافية بناءً على المعلومات التالية:
+
+$nameSection$emailSection
+المهارات التقنية:
+$skillsList
+
+مجالات الاهتمام:
+$interestsList
+
+قم بإنشاء سيرة ذاتية شاملة تتضمن:
+1. ملخص احترافي (Professional Summary)
+2. المهارات التقنية (Technical Skills) - منظمة حسب الفئات
+3. الخبرات المتوقعة (يمكن أن تكون خبرات افتراضية مبنية على المهارات)
+4. المشاريع المقترحة (بناءً على المهارات والاهتمامات)
+5. التعليم (افتراضي مناسب للمهارات)
+
+اكتب السيرة الذاتية بتنسيق احترافي وواضح باللغة الإنجليزية، مع استخدام تنسيق نصي جميل.";
+
+        $result = $this->makeRequest($prompt);
+
+        if (!$result['success']) {
+            return ['success' => false, 'error' => $result['error']];
+        }
+
+        return [
+            'success' => true,
+            'cv_text' => $result['text'],
+            'raw_response' => $result['text']
         ];
     }
 }

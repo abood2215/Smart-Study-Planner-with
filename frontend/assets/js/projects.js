@@ -6,7 +6,8 @@
 // Global state
 let userInterests = [];
 let selectedProjectIdea = null;
-let currentTab = 'my';
+let allProjectIdeas = []; // Store all generated project ideas with their full content
+let currentTab = 'owned';
 
 /**
  * Load user interests from server
@@ -91,7 +92,7 @@ async function generateProjectIdeas() {
     btn.disabled = true;
     btn.textContent = '⏳ Generating ideas...';
     section.style.display = 'block';
-    container.innerHTML = '<div class="loading"><div class="spinner"></div><p>AI is generating project ideas...</p></div>';
+    container.innerHTML = '<div class="loading"><div class="spinner"></div><p>AI is generating comprehensive project ideas with detailed plans and instructions...</p><p style="color: #666; font-size: 0.9rem; margin-top: 10px;">This may take up to 60 seconds. Please wait...</p></div>';
 
     try {
         const token = localStorage.getItem('token') ||
@@ -107,7 +108,7 @@ async function generateProjectIdeas() {
             body: JSON.stringify({
                 interests: userInterests.join(', '),
                 difficulty: 'medium',
-                count: 5
+                count: 3 // Generate 3 projects for faster response
             })
         });
 
@@ -194,9 +195,12 @@ function splitProjectsManually(text) {
  * Display project cards in grid
  */
 function displayProjectCards(projects, container, createBtn) {
+    // Store all projects globally
+    allProjectIdeas = projects;
+
     container.innerHTML = `
         <div class="alert" style="background: #d4edda; border: 1px solid #28a745; padding: 12px; border-radius: 8px; margin-bottom: 15px; color: #155724;">
-            <strong>✨ Success!</strong> Generated ${projects.length} project ideas. Click on any card to select it.
+            <strong>✨ Success!</strong> Generated ${projects.length} project ideas with detailed plans. Click on any card to select it.
         </div>
         <div class="project-ideas-grid">
             ${projects.map((project, index) => `
@@ -241,15 +245,21 @@ function selectProjectIdea(index) {
  * Create selected project
  */
 async function createSelectedProject() {
-    if (selectedProjectIdea === null) {
+    if (selectedProjectIdea === null || !allProjectIdeas[selectedProjectIdea]) {
         alert('Please select a project idea first!');
         return;
     }
 
+    // Get the selected project with full plan
+    const selectedProject = allProjectIdeas[selectedProjectIdea];
+    const fullProjectPlan = selectedProject.raw || selectedProject;
+
     const projectName = prompt('Enter a name for your project:');
     if (!projectName) return;
 
-    const projectDescription = prompt('Enter a brief description:');
+    // Use first 200 characters of plan as description, or ask user
+    const defaultDescription = fullProjectPlan.substring(0, 200);
+    const projectDescription = prompt('Enter a brief description (or keep the default):', defaultDescription);
     if (!projectDescription) return;
 
     const btn = document.getElementById('createProjectBtn');
@@ -270,9 +280,10 @@ async function createSelectedProject() {
             body: JSON.stringify({
                 name: projectName,
                 description: projectDescription,
+                plan: fullProjectPlan, // Save the full AI-generated plan
                 category: userInterests[0] || 'general',
                 required_skills: userInterests.join(', '),
-                status: 'active',
+                status: 'draft', // Start as draft since they have a plan to follow
                 is_public: 1,
                 max_team_size: 5
             })
@@ -283,7 +294,7 @@ async function createSelectedProject() {
         console.log('Create project response:', result);
 
         if (result.success) {
-            alert('✅ Project created successfully!');
+            alert('✅ Project created successfully with full plan and instructions!');
             console.log('Redirecting to project page:', result.data.project_id);
             // Add a small delay to ensure database is updated
             setTimeout(() => {

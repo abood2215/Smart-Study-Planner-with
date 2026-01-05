@@ -62,7 +62,7 @@ class User {
      * Find user by ID
      */
     public function findById($id) {
-        $stmt = $this->db->prepare("SELECT id, name, email, interests, skills, created_at FROM users WHERE id = :id");
+        $stmt = $this->db->prepare("SELECT id, name, email, interests, skills, cv, created_at FROM users WHERE id = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch();
     }
@@ -89,7 +89,10 @@ class User {
             'user' => [
                 'id' => $user['id'],
                 'name' => $user['name'],
-                'email' => $user['email']
+                'email' => $user['email'],
+                'skills' => $user['skills'] ?? '',
+                'interests' => $user['interests'] ?? '',
+                'cv' => $user['cv'] ?? ''
             ]
         ];
     }
@@ -130,6 +133,11 @@ class User {
             if (isset($data['skills'])) {
                 $fields[] = 'skills = :skills';
                 $params['skills'] = sanitize($data['skills']);
+            }
+
+            if (isset($data['cv'])) {
+                $fields[] = 'cv = :cv';
+                $params['cv'] = $data['cv'];
             }
 
             if (empty($fields)) {

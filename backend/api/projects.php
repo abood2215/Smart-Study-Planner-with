@@ -109,6 +109,34 @@ try {
             }
             break;
 
+        // Get project comments
+        case 'comments':
+        case 'get-comments':
+            if ($method === 'GET' && $id) {
+                $controller->getComments($id);
+            } else {
+                sendError('Project ID is required', 400);
+            }
+            break;
+
+        // Add a comment
+        case 'add-comment':
+            if ($method === 'POST' && $id) {
+                $controller->addComment($id);
+            } else {
+                sendError('Project ID is required', 400);
+            }
+            break;
+
+        // Update project status (owner only)
+        case 'update-status':
+            if ($method === 'POST' && $id) {
+                $controller->updateStatus($id);
+            } else {
+                sendError('Project ID is required', 400);
+            }
+            break;
+
         default:
             sendError('Invalid action', 404);
     }

@@ -24,7 +24,8 @@ async function loadProfile() {
         const result = await response.json();
 
         if (result.success) {
-            currentUser = result.data;
+            // Extract user from the nested data structure
+            currentUser = result.data.user || result.data;
             displayProfile(currentUser);
         } else {
             showError('Failed to load profile');
@@ -43,6 +44,18 @@ function displayProfile(user) {
     document.getElementById('userEmail').value = user.email || '';
     document.getElementById('userInterests').value = user.interests || '';
     document.getElementById('userSkills').value = user.skills || '';
+
+    // Display CV if it exists
+    const cvTextArea = document.getElementById('cvText');
+    const cvResult = document.getElementById('cvResult');
+
+    if (user.cv && user.cv.trim() !== '') {
+        cvTextArea.value = user.cv;
+        cvResult.style.display = 'block';
+    } else {
+        cvTextArea.value = '';
+        cvResult.style.display = 'none';
+    }
 
     updateDisplayTags();
 }
@@ -91,123 +104,64 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * Analyze CV with AI
+ * Generate CV with AI based on skills and interests
  */
-async function analyzeCV() {
-    const cvText = document.getElementById('cvText').value.trim();
+async function generateCV() {
+    const skills = document.getElementById('userSkills').value.trim();
+    const interests = document.getElementById('userInterests').value.trim();
 
-    if (!cvText) {
-        alert('Please paste your CV content first!');
+    if (!skills && !interests) {
+        showError('Please enter your skills and/or interests first!');
         return;
     }
 
-    const btn = document.getElementById('analyzeCVBtn');
-    const resultContainer = document.getElementById('analysisResult');
+    const btn = document.getElementById('generateCVBtn');
+    const resultContainer = document.getElementById('cvResult');
+    const cvTextArea = document.getElementById('cvText');
 
     btn.disabled = true;
-    btn.textContent = '⏳ Analyzing CV...';
+    btn.textContent = '⏳ Generating CV...';
     resultContainer.style.display = 'block';
-    resultContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>AI is analyzing your CV...</p></div>';
+    cvTextArea.value = '';
+    cvTextArea.placeholder = 'AI is generating your CV...';
 
     try {
         const token = localStorage.getItem('token') ||
                      localStorage.getItem('auth_token') ||
                      localStorage.getItem('currentUser');
 
-        const response = await fetch(`${API_BASE_URL}/backend/api/ai.php?action=analyze-cv`, {
+        const response = await fetch(`${API_BASE_URL}/backend/api/ai.php?action=generate-cv`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                cv_text: cvText
+                skills: skills,
+                interests: interests
             })
         });
 
         const result = await response.json();
 
         if (result.success) {
-            displayAnalysisResults(result.data);
-
-            // Update form fields with extracted data
-            if (result.data.skills && result.data.skills.length > 0) {
-                document.getElementById('userSkills').value = Array.isArray(result.data.skills)
-                    ? result.data.skills.join(', ')
-                    : result.data.skills;
-            }
-
-            if (result.data.interests && result.data.interests.length > 0) {
-                document.getElementById('userInterests').value = Array.isArray(result.data.interests)
-                    ? result.data.interests.join(', ')
-                    : result.data.interests;
-            }
-
-            updateDisplayTags();
-
-            if (result.data.profile_updated) {
-                showSuccess('CV analyzed successfully! Your profile has been updated.');
-            }
+            cvTextArea.value = result.data.cv_text;
+            cvTextArea.placeholder = 'Your AI-generated CV will appear here...';
+            showSuccess('CV generated successfully! You can copy it or edit it as needed.');
         } else {
-            resultContainer.innerHTML = `<p style="color: #dc3545;">Error: ${result.message}</p>`;
+            cvTextArea.value = '';
+            cvTextArea.placeholder = 'Failed to generate CV. Please try again.';
+            showError('Error: ' + result.message);
         }
     } catch (error) {
-        console.error('Error analyzing CV:', error);
-        resultContainer.innerHTML = '<p style="color: #dc3545;">Failed to analyze CV. Please try again.</p>';
+        console.error('Error generating CV:', error);
+        cvTextArea.value = '';
+        cvTextArea.placeholder = 'Failed to generate CV. Please try again.';
+        showError('Failed to generate CV. Please try again.');
     } finally {
         btn.disabled = false;
-        btn.textContent = '🤖 Analyze CV with AI';
+        btn.textContent = '🤖 Generate CV with AI';
     }
-}
-
-/**
- * Display CV analysis results
- */
-function displayAnalysisResults(data) {
-    const container = document.getElementById('analysisResult');
-
-    const skillsList = Array.isArray(data.skills) ? data.skills : (data.skills ? data.skills.split(',') : []);
-    const interestsList = Array.isArray(data.interests) ? data.interests : (data.interests ? data.interests.split(',') : []);
-
-    container.innerHTML = `
-        <h3>✅ Analysis Complete!</h3>
-
-        ${skillsList.length > 0 ? `
-            <div class="analysis-section">
-                <h4>🛠️ Extracted Skills:</h4>
-                <div class="skills-display">
-                    ${skillsList.map(skill => `<div class="skill-tag">${skill.trim()}</div>`).join('')}
-                </div>
-            </div>
-        ` : ''}
-
-        ${interestsList.length > 0 ? `
-            <div class="analysis-section">
-                <h4>💡 Identified Interests:</h4>
-                <div class="skills-display">
-                    ${interestsList.map(interest => `<div class="interest-tag">${interest.trim()}</div>`).join('')}
-                </div>
-            </div>
-        ` : ''}
-
-        ${data.experience_level ? `
-            <div class="analysis-section">
-                <h4>📊 Experience Level:</h4>
-                <p style="color: #333; font-size: 1.1rem; text-transform: capitalize;">${data.experience_level}</p>
-            </div>
-        ` : ''}
-
-        ${data.summary ? `
-            <div class="analysis-section">
-                <h4>📝 Profile Summary:</h4>
-                <p style="color: #555; line-height: 1.6;">${data.summary}</p>
-            </div>
-        ` : ''}
-
-        <p style="margin-top: 20px; color: #666; font-style: italic;">
-            The extracted data has been automatically filled in the form below. Review and save when ready!
-        </p>
-    `;
 }
 
 /**
@@ -216,6 +170,7 @@ function displayAnalysisResults(data) {
 async function saveProfile() {
     const interests = document.getElementById('userInterests').value.trim();
     const skills = document.getElementById('userSkills').value.trim();
+    const cv = document.getElementById('cvText').value.trim();
 
     const btn = document.getElementById('saveProfileBtn');
     btn.disabled = true;
@@ -234,7 +189,8 @@ async function saveProfile() {
             },
             body: JSON.stringify({
                 interests: interests,
-                skills: skills
+                skills: skills,
+                cv: cv
             })
         });
 
@@ -247,6 +203,7 @@ async function saveProfile() {
             const user = JSON.parse(localStorage.getItem('user') || '{}');
             user.interests = interests;
             user.skills = skills;
+            user.cv = cv;
             localStorage.setItem('user', JSON.stringify(user));
 
             loadStatistics(); // Reload stats

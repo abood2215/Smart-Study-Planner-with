@@ -50,13 +50,21 @@ class ProjectController {
             $filters['search'] = sanitize($_GET['search']);
         }
 
-        // Get user's own projects or all public projects
-        $scope = $_GET['scope'] ?? 'own'; // 'own' or 'all'
+        // Get user's projects based on scope
+        // 'owned' - projects where user is the owner
+        // 'member' - projects where user is a member (but not owner)
+        // 'all' - all public projects
+        $scope = $_GET['scope'] ?? 'owned';
 
-        if ($scope === 'all') {
-            $projects = $this->projectModel->getAllPublic($filters);
+        if ($scope === 'owned') {
+            // Get projects where user is the owner
+            $projects = $this->projectModel->getOwnedProjects($user_id, $filters);
+        } elseif ($scope === 'member') {
+            // Get projects where user is a member (but not owner)
+            $projects = $this->projectModel->getMemberProjects($user_id, $filters);
         } else {
-            $projects = $this->projectModel->getUserProjects($user_id, $filters);
+            // Get all public projects
+            $projects = $this->projectModel->getAllPublic($filters);
         }
 
         sendSuccess($projects, 'Projects retrieved successfully');
@@ -272,5 +280,86 @@ class ProjectController {
         $matches = $this->projectModel->findMatchingTeammates($id);
 
         sendSuccess($matches, 'Potential teammates retrieved successfully');
+    }
+
+    /**
+     * Get comments for a project
+     */
+    public function getComments($id) {
+        $user_id = requireAuth();
+
+        // Check if user has access to this project
+        if (!$this->projectModel->userHasAccess($id, $user_id)) {
+            sendError('Access denied', 403);
+        }
+
+        $comments = $this->projectModel->getComments($id);
+
+        sendSuccess($comments, 'Comments retrieved successfully');
+    }
+
+    /**
+     * Add a comment to a project
+     */
+    public function addComment($id) {
+        $user_id = requireAuth();
+        $data = getJsonInput();
+
+        // Check if user has access to this project (must be owner or member)
+        if (!$this->projectModel->userHasAccess($id, $user_id)) {
+            sendError('Access denied', 403);
+        }
+
+        // Validate required fields
+        if (empty($data['comment'])) {
+            sendError('Comment text is required', 400);
+        }
+
+        $result = $this->projectModel->addComment([
+            'project_id' => $id,
+            'user_id' => $user_id,
+            'comment' => sanitize($data['comment']),
+            'parent_id' => $data['parent_id'] ?? null
+        ]);
+
+        if ($result['success']) {
+            sendSuccess($result, 'Comment added successfully', 201);
+        } else {
+            sendError($result['message'], 500);
+        }
+    }
+
+    /**
+     * Update project status (owner only)
+     */
+    public function updateStatus($id) {
+        $user_id = requireAuth();
+        $data = getJsonInput();
+
+        // Get project to check ownership
+        $project = $this->projectModel->getById($id);
+
+        if (!$project) {
+            sendError('Project not found', 404);
+        }
+
+        // Only owner can update status
+        if ($project['owner_id'] != $user_id) {
+            sendError('Only the project owner can update the status', 403);
+        }
+
+        // Validate status
+        $validStatuses = ['draft', 'in_progress', 'completed', 'canceled', 'closed'];
+        if (empty($data['status']) || !in_array($data['status'], $validStatuses)) {
+            sendError('Invalid status. Must be one of: ' . implode(', ', $validStatuses), 400);
+        }
+
+        $result = $this->projectModel->updateStatus($id, $data['status']);
+
+        if ($result['success']) {
+            sendSuccess(null, 'Status updated successfully');
+        } else {
+            sendError($result['message'], 500);
+        }
     }
 }

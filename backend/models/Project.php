@@ -35,11 +35,11 @@ class Project {
         try {
             $stmt = $this->db->prepare("
                 INSERT INTO projects (
-                    owner_id, name, description, category, status,
+                    owner_id, name, description, plan, category, status,
                     required_skills, is_public, max_team_size
                 )
                 VALUES (
-                    :owner_id, :name, :description, :category, :status,
+                    :owner_id, :name, :description, :plan, :category, :status,
                     :required_skills, :is_public, :max_team_size
                 )
             ");
@@ -48,6 +48,7 @@ class Project {
                 'owner_id' => $user_id,
                 'name' => $data['name'],
                 'description' => $data['description'],
+                'plan' => $data['plan'] ?? null,
                 'category' => $data['category'] ?? 'general',
                 'status' => $data['status'] ?? 'active',
                 'required_skills' => $data['required_skills'] ?? null,
@@ -173,6 +174,106 @@ class Project {
 
         } catch (PDOException $e) {
             logMessage("Error fetching public projects: " . $e->getMessage(), 'ERROR');
+            return [];
+        }
+    }
+
+    /**
+     * Get projects owned by user
+     *
+     * @param int $user_id User ID
+     * @param array $filters Optional filters
+     * @return array List of owned projects
+     */
+    public function getOwnedProjects($user_id, $filters = []) {
+        try {
+            $sql = "
+                SELECT p.*,
+                    COUNT(DISTINCT pt.user_id) as team_count
+                FROM projects p
+                LEFT JOIN project_team pt ON p.id = pt.project_id
+                WHERE p.owner_id = :owner_id
+            ";
+            $params = ['owner_id' => $user_id];
+
+            // Apply filters
+            if (isset($filters['status'])) {
+                $sql .= " AND p.status = :status";
+                $params['status'] = $filters['status'];
+            }
+
+            if (isset($filters['category'])) {
+                $sql .= " AND p.category = :category";
+                $params['category'] = $filters['category'];
+            }
+
+            if (isset($filters['search'])) {
+                $sql .= " AND (p.name LIKE :search OR p.description LIKE :search)";
+                $params['search'] = '%' . $filters['search'] . '%';
+            }
+
+            $sql .= " GROUP BY p.id ORDER BY p.created_at DESC";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+
+            return $stmt->fetchAll();
+
+        } catch (PDOException $e) {
+            logMessage("Error fetching owned projects: " . $e->getMessage(), 'ERROR');
+            return [];
+        }
+    }
+
+    /**
+     * Get projects where user is a member (but not owner)
+     *
+     * @param int $user_id User ID
+     * @param array $filters Optional filters
+     * @return array List of member projects
+     */
+    public function getMemberProjects($user_id, $filters = []) {
+        try {
+            $sql = "
+                SELECT DISTINCT p.*,
+                    u.name as owner_name,
+                    COUNT(DISTINCT pt2.user_id) as team_count
+                FROM projects p
+                INNER JOIN project_team pt ON p.id = pt.project_id AND pt.user_id = :user_id
+                LEFT JOIN users u ON p.owner_id = u.id
+                LEFT JOIN project_team pt2 ON p.id = pt2.project_id
+                WHERE p.owner_id != :owner_id
+            ";
+            $params = [
+                'user_id' => $user_id,
+                'owner_id' => $user_id
+            ];
+
+            // Apply filters
+            if (isset($filters['status'])) {
+                $sql .= " AND p.status = :status";
+                $params['status'] = $filters['status'];
+            }
+
+            if (isset($filters['category'])) {
+                $sql .= " AND p.category = :category";
+                $params['category'] = $filters['category'];
+            }
+
+            if (isset($filters['search'])) {
+                $sql .= " AND (p.name LIKE :search OR p.description LIKE :search)";
+                $params['search'] = '%' . $filters['search'] . '%';
+            }
+
+            $sql .= " GROUP BY p.id ORDER BY p.created_at DESC";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+
+            return $stmt->fetchAll();
+
+        } catch (PDOException $e) {
+            logMessage("Error fetching member projects: " . $e->getMessage(), 'ERROR');
             return [];
         }
     }
@@ -571,6 +672,106 @@ class Project {
         } catch (PDOException $e) {
             logMessage("Error finding matching teammates: " . $e->getMessage(), 'ERROR');
             return [];
+        }
+    }
+
+    /**
+     * Get comments for a project
+     *
+     * @param int $project_id Project ID
+     * @return array List of comments with user info
+     */
+    public function getComments($project_id) {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT c.*,
+                    u.name as user_name,
+                    u.email as user_email
+                FROM project_comments c
+                LEFT JOIN users u ON c.user_id = u.id
+                WHERE c.project_id = :project_id
+                ORDER BY c.created_at ASC
+            ");
+
+            $stmt->execute(['project_id' => $project_id]);
+
+            return $stmt->fetchAll();
+
+        } catch (PDOException $e) {
+            logMessage("Error fetching comments: " . $e->getMessage(), 'ERROR');
+            return [];
+        }
+    }
+
+    /**
+     * Add a comment to a project
+     *
+     * @param array $data Comment data
+     * @return array Result with success status
+     */
+    public function addComment($data) {
+        try {
+            $stmt = $this->db->prepare("
+                INSERT INTO project_comments (project_id, user_id, comment, parent_id)
+                VALUES (:project_id, :user_id, :comment, :parent_id)
+            ");
+
+            $stmt->execute([
+                'project_id' => $data['project_id'],
+                'user_id' => $data['user_id'],
+                'comment' => $data['comment'],
+                'parent_id' => $data['parent_id']
+            ]);
+
+            $comment_id = $this->db->lastInsertId();
+
+            return [
+                'success' => true,
+                'comment_id' => $comment_id,
+                'message' => 'Comment added successfully'
+            ];
+
+        } catch (PDOException $e) {
+            logMessage("Error adding comment: " . $e->getMessage(), 'ERROR');
+            return [
+                'success' => false,
+                'message' => 'Failed to add comment'
+            ];
+        }
+    }
+
+    /**
+     * Update project status
+     *
+     * @param int $project_id Project ID
+     * @param string $status New status
+     * @return array Result with success status
+     */
+    public function updateStatus($project_id, $status) {
+        try {
+            $stmt = $this->db->prepare("
+                UPDATE projects
+                SET status = :status,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = :project_id
+            ");
+
+            $stmt->execute([
+                'status' => $status,
+                'project_id' => $project_id
+            ]);
+
+            return [
+                'success' => true,
+                'message' => 'Status updated successfully'
+            ];
+
+        } catch (PDOException $e) {
+            logMessage("Error updating project status: " . $e->getMessage(), 'ERROR');
+            return [
+                'success' => false,
+                'message' => 'Failed to update status'
+            ];
         }
     }
 }

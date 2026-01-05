@@ -127,6 +127,16 @@ try {
             }
             break;
 
+        // Generate CV based on skills and interests
+        case 'generate-cv':
+        case 'generateCV':
+            if ($method === 'POST') {
+                $controller->generateCV();
+            } else {
+                sendError('Method not allowed', 405);
+            }
+            break;
+
         default:
             sendError('Invalid action', 404);
     }

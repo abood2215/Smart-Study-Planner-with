@@ -321,6 +321,7 @@
                 <a href="index.html">Home</a>
                 <a href="dashboard.html">Study Planner</a>
                 <a href="profile.html">Profile</a>
+                <span id="userName" style="color: var(--gray-700); font-weight: 500; margin-right: 10px;">Loading...</span>
                 <a href="#" onclick="logout()" class="btn btn-outline">Logout</a>
             </div>
         </div>
@@ -373,8 +374,8 @@
                 <span>My Projects</span>
             </h2>
             <div class="tabs">
-                <button class="tab active" onclick="switchTab('my')">My Projects</button>
-                <button class="tab" onclick="switchTab('all')">Discover Projects</button>
+                <button class="tab active" onclick="switchTab('owned')">My Projects</button>
+                <button class="tab" onclick="switchTab('member')">Projects I'm a Member In</button>
             </div>
             <div id="projectsContainer">
                 <div class="loading">
@@ -430,12 +431,42 @@
                 });
             }
 
+            // Load user name
+            loadUserName();
+
             // Load user interests
             loadUserInterests();
 
             // Load projects
-            loadProjects('my');
+            loadProjects('owned');
         });
+
+        // Load and display user name
+        async function loadUserName() {
+            try {
+                const token = localStorage.getItem('token') ||
+                             localStorage.getItem('auth_token') ||
+                             localStorage.getItem('currentUser');
+
+                const response = await fetch(`${API_BASE_URL}/backend/api/auth.php?action=profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const user = result.data.user || result.data;
+                    document.getElementById('userName').textContent = user.name || 'User';
+                } else {
+                    document.getElementById('userName').textContent = '';
+                }
+            } catch (error) {
+                console.error('Error loading user name:', error);
+                document.getElementById('userName').textContent = '';
+            }
+        }
     </script>
 </body>
 </html>

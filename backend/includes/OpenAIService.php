@@ -144,7 +144,8 @@ class OpenAIService {
                 ],
                 CURLOPT_POST => true,
                 CURLOPT_POSTFIELDS => $jsonPayload,
-                CURLOPT_TIMEOUT => 30
+                CURLOPT_TIMEOUT => 120, // 120 second timeout for comprehensive AI responses
+                CURLOPT_CONNECTTIMEOUT => 30 // 30 second connection timeout
             ]);
 
             $response = curl_exec($ch);
@@ -374,19 +375,34 @@ class OpenAIService {
      * Generate project ideas based on user interests
      */
     public function generateProjectIdeas($interests, $difficulty = 'medium', $count = 5) {
-        $prompt = "Generate $count innovative and practical project ideas based on these interests:\n\n";
-        $prompt .= "Interests: $interests\n";
-        $prompt .= "Difficulty level: $difficulty\n\n";
-        $prompt .= "For each project, provide:\n";
-        $prompt .= "1. Project title\n";
-        $prompt .= "2. Brief description (2-3 sentences)\n";
-        $prompt .= "3. Required technologies/skills\n";
-        $prompt .= "4. Difficulty level (easy/medium/hard)\n";
-        $prompt .= "5. Estimated completion time";
+        $prompt = "You are an expert in generating innovative software and technology project ideas.\n\n";
+        $prompt .= "The user has the following interests: $interests\n";
+        $prompt .= "Difficulty level: $difficulty\n";
+        $prompt .= "Number of ideas: $count\n\n";
+        $prompt .= "Please create $count innovative and feasible project ideas suitable for these interests.\n\n";
+        $prompt .= "For EACH project, provide a COMPREHENSIVE PROPOSAL in the following format:\n\n";
+        $prompt .= "PROJECT [Number]: [Project Title]\n\n";
+        $prompt .= "DESCRIPTION:\n[2-3 sentences describing what the project is and its purpose]\n\n";
+        $prompt .= "REQUIRED TECHNOLOGIES:\n[List the technologies, frameworks, and tools needed]\n\n";
+        $prompt .= "DIFFICULTY LEVEL:\n[easy/medium/hard]\n\n";
+        $prompt .= "ESTIMATED TIME:\n[Time to complete the project]\n\n";
+        $prompt .= "PROJECT PLAN:\n";
+        $prompt .= "Phase 1: Planning & Setup\n- [Specific tasks for setup and planning]\n\n";
+        $prompt .= "Phase 2: Core Development\n- [Specific development tasks]\n\n";
+        $prompt .= "Phase 3: Features & Integration\n- [Feature implementation tasks]\n\n";
+        $prompt .= "Phase 4: Testing & Deployment\n- [Testing and deployment tasks]\n\n";
+        $prompt .= "STEP-BY-STEP INSTRUCTIONS:\n";
+        $prompt .= "Step 1: [Detailed instruction]\n";
+        $prompt .= "Step 2: [Detailed instruction]\n";
+        $prompt .= "Step 3: [Detailed instruction]\n";
+        $prompt .= "[Continue with detailed steps...]\n\n";
+        $prompt .= "LEARNING OUTCOMES:\n- [What the user will learn from this project]\n\n";
+        $prompt .= "---\n\n";
+        $prompt .= "Format each project clearly and separate them with '---'. Write in English with clear formatting.";
 
         $result = $this->generateInsights($prompt, [
             'temperature' => 0.8,
-            'max_tokens' => 1000
+            'max_tokens' => 2500
         ]);
 
         if (!$result['success']) {
@@ -531,6 +547,44 @@ class OpenAIService {
             'experience_level' => $experienceLevel,
             'summary' => trim($summary),
             'raw_response' => $rawResponse
+        ];
+    }
+
+    /**
+     * Generate a CV based on skills and interests
+     */
+    public function generateCV($skills, $interests, $userName = '', $userEmail = '') {
+        $skillsList = is_array($skills) ? implode(', ', $skills) : $skills;
+        $interestsList = is_array($interests) ? implode(', ', $interests) : $interests;
+
+        $nameSection = !empty($userName) ? "Name: $userName\n" : "";
+        $emailSection = !empty($userEmail) ? "Email: $userEmail\n" : "";
+
+        $prompt = "You are a professional CV writer. Create a comprehensive and professional CV based on the following information:\n\n";
+        $prompt .= $nameSection . $emailSection;
+        $prompt .= "Technical Skills: $skillsList\n";
+        $prompt .= "Areas of Interest: $interestsList\n\n";
+        $prompt .= "Please create a complete CV that includes:\n";
+        $prompt .= "1. Professional Summary\n";
+        $prompt .= "2. Technical Skills (organized by categories)\n";
+        $prompt .= "3. Professional Experience (create realistic experience based on the skills)\n";
+        $prompt .= "4. Suggested Projects (based on skills and interests)\n";
+        $prompt .= "5. Education (appropriate for the skill level)\n\n";
+        $prompt .= "Format the CV professionally with clear sections and appropriate formatting.";
+
+        $result = $this->generateInsights($prompt, [
+            'temperature' => 0.7,
+            'max_tokens' => 1500
+        ]);
+
+        if (!$result['success']) {
+            return ['success' => false, 'error' => $result['error']];
+        }
+
+        return [
+            'success' => true,
+            'cv_text' => $result['content'],
+            'raw_response' => $result['content']
         ];
     }
 }

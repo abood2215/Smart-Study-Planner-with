@@ -382,4 +382,50 @@ class AIController {
             'profile_updated' => !empty($updateData)
         ], 'CV analyzed successfully');
     }
+
+    /**
+     * Generate CV based on skills and interests
+     */
+    public function generateCV() {
+        $user_id = requireAuth();
+        $data = getJsonInput();
+
+        // Validate required fields
+        if (empty($data['skills']) && empty($data['interests'])) {
+            sendError('Either skills or interests are required', 400);
+        }
+
+        // Get user information for personalization
+        $user = $this->userModel->findById($user_id);
+        $userName = $user['name'] ?? '';
+        $userEmail = $user['email'] ?? '';
+
+        $skills = $data['skills'] ?? '';
+        $interests = $data['interests'] ?? '';
+
+        $result = $this->activeService->generateCV($skills, $interests, $userName, $userEmail);
+
+        if (!$result['success']) {
+            sendError('Failed to generate CV: ' . $result['error'], 500);
+        }
+
+        // Save the generated CV to the database
+        try {
+            $db = getDB();
+            $stmt = $db->prepare("UPDATE users SET cv = :cv WHERE id = :user_id");
+            $stmt->execute([
+                'cv' => $result['cv_text'],
+                'user_id' => $user_id
+            ]);
+        } catch (PDOException $e) {
+            logMessage("Error saving CV: " . $e->getMessage(), 'ERROR');
+            // Continue even if save fails - still return the generated CV
+        }
+
+        sendSuccess([
+            'cv_text' => $result['cv_text'],
+            'raw_response' => $result['raw_response'] ?? '',
+            'cv_saved' => true
+        ], 'CV generated and saved successfully');
+    }
 }

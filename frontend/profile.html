@@ -273,29 +273,6 @@
             </div>
         </div>
 
-        <!-- CV Analysis -->
-        <div class="section-card">
-            <h2 class="section-title">
-                <span>📄</span>
-                <span>CV Analysis</span>
-            </h2>
-            <div class="info-box">
-                <p>Paste your CV content below and let AI extract your skills and interests automatically!</p>
-            </div>
-            <div class="form-group">
-                <label>Paste Your CV</label>
-                <textarea
-                    id="cvText"
-                    placeholder="Paste your CV content here... Include your experience, skills, education, and projects."
-                ></textarea>
-            </div>
-            <button class="btn btn-primary" onclick="analyzeCV()" id="analyzeCVBtn">
-                🤖 Analyze CV with AI
-            </button>
-
-            <div id="analysisResult" class="analysis-result" style="display: none;"></div>
-        </div>
-
         <!-- Interests -->
         <div class="section-card">
             <h2 class="section-title">
@@ -328,6 +305,34 @@
                 >
             </div>
             <div class="skills-display" id="skillsDisplay"></div>
+        </div>
+
+        <!-- CV Generation -->
+        <div class="section-card">
+            <h2 class="section-title">
+                <span>📄</span>
+                <span>AI CV Generator</span>
+            </h2>
+            <div class="info-box">
+                <p>Enter your skills and interests above, then click "Generate CV with AI" to create a professional CV. You can also manually edit your CV below and save it.</p>
+            </div>
+            <button class="btn btn-primary" onclick="generateCV()" id="generateCVBtn">
+                🤖 Generate CV with AI
+            </button>
+
+            <div id="cvResult" class="analysis-result" style="display: none;">
+                <h3>✅ Your CV</h3>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">
+                    You can edit your CV below. Changes will be saved when you click "Save Profile".
+                </p>
+                <div class="form-group">
+                    <textarea
+                        id="cvText"
+                        placeholder="Your CV will appear here... Click 'Generate CV with AI' to create one or paste your own."
+                        style="min-height: 400px; font-family: monospace; font-size: 0.9rem;"
+                    ></textarea>
+                </div>
+            </div>
         </div>
 
         <!-- Save Button -->
